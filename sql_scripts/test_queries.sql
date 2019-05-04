@@ -13,6 +13,7 @@ INSERT into PUBLISHER values ('Dragon Spirits', '270 Woodsman Street Santa Monic
 INSERT into PUBLISHER values ('Cooperative Exchange Network', '568 Bridgeton Street New Milford, CT 06776', '6535666533');
 INSERT into PUBLISHER values ('Journal Of Commerce Group', '90 Dan Street, CA 556', '0123655599');
 
+
 INSERT into AUTHOR (Author_name) values ('Gloria Sloan');
 INSERT into AUTHOR (Author_name) values ('Joan Cole');
 INSERT into AUTHOR (Author_name) values ('Ken Sallings');

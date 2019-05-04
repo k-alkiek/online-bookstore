@@ -1,11 +1,14 @@
+use LIBRARY_MANAGER;
+
 # procedure to submit an unconfirmed order gor a book from its publisher
 DELIMITER //
 CREATE PROCEDURE Make_order(
-IN ISBN int,
+IN ISBN varchar(17),
 IN amount int
 )
 BEGIN
-  INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity) VALUES ( curdate(), NULL, FALSE, ISBN, amount);
+  INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
+  VALUES ( curdate(), NULL, FALSE, ISBN, amount);
 END //
 DELIMITER ;
 
@@ -38,19 +41,23 @@ FOR EACH ROW
 BEGIN
 
   DECLARE number_of_available_copies INTEGER;
+  DECLARE price_ REAL;
 
   IF  New.No_of_copies < 1 THEN
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Not acceptable quantity "can\'t be negative" ';
   END IF;
 
-  SELECT Available_copies_count
-  INTO number_of_available_copies
+
+  SELECT Available_copies_count,selling_price
+  INTO number_of_available_copies,price_
   FROM BOOK
   WHERE ISBN = NEW.BOOK_ISBN;
 
+  IF price_ * NEW.No_of_copies != NEW.price THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The price is not right';
+  end if;
+
   IF number_of_available_copies < New.No_of_copies THEN
-    # barie disagrees
-    # CALL Make_order_if_doesnt_exist(New.BOOK_ISBN,New.No_of_copies);
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The amount in stock is not sufficient and submitted order';
   END IF;
 
@@ -62,9 +69,11 @@ CREATE TRIGGER update_amount
 AFTER INSERT ON PURCHASE
 FOR EACH ROW
 BEGIN
+
+
   UPDATE BOOK SET Available_copies_count =
                 Available_copies_count - New.No_of_copies
-    where ISBN = BOOK_ISBN;
+    where ISBN = NEW.BOOK_ISBN;
 END;
 
 
@@ -79,7 +88,7 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The amount in stock can\'t be negative';
   END IF;
 
-  IF New.price <= 0 THEN
+  IF New.selling_price <= 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The price must be positive';
   END IF;
 
@@ -98,11 +107,15 @@ BEFORE INSERT ON BOOK
   FOR EACH ROW
 BEGIN
 
-  IF New.Minimum_Threshold < 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The amount in stock can\'t be negative';
+  IF New.Minimum_Threshold > New.Available_copies_count THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The amount is not consistent with the threshold';
   END IF;
 
-  IF New.price <= 0 THEN
+  IF New.Minimum_Threshold < 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The threshold in stock can\'t be negative';
+  END IF;
+
+  IF New.selling_price <= 0 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The price must be positive';
   END IF;
 
@@ -119,14 +132,14 @@ END;
 
 # checks that the amount left is more that the threshold
 # if not it places an order of a proportional amount of the threshold
-CREATE TRIGGER available_amount_check
-AFTER UPDATE ON BOOK.Available_copies_count
+CREATE TRIGGER order_if_below_threshold
+AFTER UPDATE ON BOOK
   FOR EACH ROW
 BEGIN
 
 
   IF New.Available_copies_count < New.Minimum_threshold THEN
-    CALL Make_order(New.ISBN,New.New.Minimum_threshold * 2);
+    CALL Make_order(New.ISBN, New.Minimum_threshold * 2);
   END IF;
 
 
@@ -151,15 +164,15 @@ BEGIN
     SELECT SUM(quantity)
     INTO number_of_ordered_copies
     FROM `ORDER` as current_orders
-    WHERE ISBN = Old.BOOK_ISBN AND Old.id != current_orders.id ;
+    WHERE current_orders.BOOK_ISBN = Old.BOOK_ISBN AND Old.id != current_orders.id ;
 
     SELECT Available_copies_count, Minimum_threshold
     INTO number_available_in_stock, threshold
     FROM BOOK
     WHERE ISBN = Old.BOOK_ISBN ;
 
-
-    IF (number_available_in_stock + number_of_ordered_copies < threshold) THEN
+    IF ( (number_of_ordered_copies is NULL AND number_available_in_stock < threshold) OR
+      (number_available_in_stock + number_of_ordered_copies < threshold)) THEN
          SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Deleting this order will not satisfy the book threshold';
     end if;
 
@@ -195,8 +208,8 @@ AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
 
 
 # The top 5 customers who purchase the most purchase amount in descending order for the last three months
-SELECT user_name, SUM(price) as buyings FROM
-        PURCHASE inner join `USER` on id = User_id
+SELECT first_name,last_name, SUM(price) as buyings FROM
+        PURCHASE inner join `User` on User.id = User_id
 WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
 AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
 GROUP BY id ORDER BY buyings DESC LIMIT 5;

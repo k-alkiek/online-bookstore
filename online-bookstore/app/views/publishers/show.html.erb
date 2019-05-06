@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @publisher.address %>
+</p>
+
+<p>
+  <strong>Telephone:</strong>
+  <%= @publisher.telephone %>
+</p>
+
+<%= link_to 'Edit', edit_publisher_path(@publisher) %> |
+<%= link_to 'Back', publishers_path %>

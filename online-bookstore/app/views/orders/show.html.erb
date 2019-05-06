@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Date submitted:</strong>
+  <%= @order.date_submitted %>
+</p>
+
+<p>
+  <strong>Estimated arrival date:</strong>
+  <%= @order.estimated_arrival_date %>
+</p>
+
+<p>
+  <strong>Confirmed:</strong>
+  <%= @order.confirmed %>
+</p>
+
+<p>
+  <strong>Book isbn:</strong>
+  <%= @order.BOOK_ISBN %>
+</p>
+
+<p>
+  <strong>Quantity:</strong>
+  <%= @order.quantity %>
+</p>
+
+<%= link_to 'Edit', edit_order_path(@order) %> |
+<%= link_to 'Back', orders_path %>

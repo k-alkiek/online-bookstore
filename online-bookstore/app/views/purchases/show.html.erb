@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @purchase.User %>
+</p>
+
+<p>
+  <strong>Book isbn:</strong>
+  <%= @purchase.BOOK_ISBN %>
+</p>
+
+<p>
+  <strong>No of copies:</strong>
+  <%= @purchase.No_of_copies %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @purchase.price %>
+</p>
+
+<p>
+  <strong>Date of purchase:</strong>
+  <%= @purchase.date_of_purchase %>
+</p>
+
+<%= link_to 'Edit', edit_purchase_path(@purchase) %> |
+<%= link_to 'Back', purchases_path %>

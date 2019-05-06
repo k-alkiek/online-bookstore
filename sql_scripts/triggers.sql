@@ -53,9 +53,13 @@ BEGIN
   FROM BOOK
   WHERE ISBN = NEW.BOOK_ISBN;
 
-  IF price_ * NEW.No_of_copies != NEW.price THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The price is not right';
-  end if;
+  SET NEW.price = price_*NEW.No_of_copies;
+
+
+#
+#   IF price_ * NEW.No_of_copies != NEW.price THEN
+#     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The price is not right';
+#   end if;
 
   IF number_of_available_copies < New.No_of_copies THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The amount in stock is not sufficient and submitted order';
@@ -139,14 +143,12 @@ BEGIN
 
 
   IF New.Available_copies_count < New.Minimum_threshold THEN
-    CALL Make_order(New.ISBN, New.Minimum_threshold * 2);
+    IF NOT (EXISTS(select * from `ORDER` where `ORDER`.BOOK_ISBN = New.ISBN)) then
+       CALL Make_order(New.ISBN, New.Minimum_threshold * 2);
+    END IF;
   END IF;
 
-
 END;
-
-
-
 
 
 
@@ -200,6 +202,7 @@ END;
 
 
 
+##############################################################################################
 # sales last month
 SELECT SUM(price) as sales FROM PURCHASE
 WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
@@ -212,7 +215,7 @@ SELECT first_name,last_name, SUM(price) as buyings FROM
         PURCHASE inner join `User` on User.id = User_id
 WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
 AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
-GROUP BY id ORDER BY buyings DESC LIMIT 5;
+GROUP BY User.id ORDER BY buyings DESC LIMIT 5;
 
 
 
@@ -221,7 +224,23 @@ SELECT title, SUM(price) as sales FROM
         PURCHASE inner join BOOK on ISBN = BOOK_ISBN
 WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
 AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
-GROUP BY ISBN ORDER BY sales DESC LIMIT 10;
+GROUP BY BOOK_ISBN ORDER BY sales DESC LIMIT 10;
+
+
+
+
+
+
+
+
+# queries to be used
+INSERT INTO BOOK VALUES ();
+UPDATE BOOK SET  WHERE ISBN = ;
+INSERT INTO `ORDER` () VALUES ();
+UPDATE `ORDER`SET confirmed = true where ISBN = ;
+UPDATE User SET isManager = true where id = ;
+
+
 
 
 
@@ -229,3 +248,4 @@ GROUP BY ISBN ORDER BY sales DESC LIMIT 10;
 
 #sql = "Select * from ... your sql query here"
 #records_array = ActiveRecord::Base.connection.execute(sql)
+

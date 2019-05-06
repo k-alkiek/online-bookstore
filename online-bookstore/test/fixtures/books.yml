@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  category: MyString
+  selling_price: 9.99
+  Minimum_threshold: 1
+  Available_copies_count: 1
+  PUBLISHER_Name: MyString
+  publish_year: 2019-05-06
+
+two:
+  title: MyString
+  category: MyString
+  selling_price: 9.99
+  Minimum_threshold: 1
+  Available_copies_count: 1
+  PUBLISHER_Name: MyString
+  publish_year: 2019-05-06

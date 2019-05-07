@@ -157,4 +157,4 @@ modules.xml
 
 # End of https://www.gitignore.io/api/rubymine+iml
 
-online-bookstore/config/database.yml
+**/database.yml

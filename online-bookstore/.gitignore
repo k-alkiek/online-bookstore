@@ -109,4 +109,4 @@ modules.xml
 
 # End of https://www.gitignore.io/api/rubymine+iml
 
-database.yml
+config/database.yml

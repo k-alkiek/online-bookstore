@@ -1,0 +1,10 @@
+%p#notice= notice
+%p
+  %strong Book isbn:
+  = @book_author.BOOK_ISBN
+%p
+  %strong Author:
+  = @book_author.AUTHOR
+= link_to 'Edit', edit_book_author_path(@book_author)
+|
+= link_to 'Back', book_authors_path

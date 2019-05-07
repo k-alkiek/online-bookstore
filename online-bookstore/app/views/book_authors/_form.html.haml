@@ -1,0 +1,17 @@
+= form_with(model: book_author, local: true) do |form|
+  - if book_author.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(book_author.errors.count, "error")
+        prohibited this book_author from being saved:
+      %ul
+        - book_author.errors.full_messages.each do |message|
+          %li= message
+  .field
+    = form.label :BOOK_ISBN
+    = form.text_field :BOOK_ISBN
+  .field
+    = form.label :AUTHOR_id
+    = form.text_field :AUTHOR_id
+  .actions
+    = form.submit

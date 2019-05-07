@@ -1,0 +1,25 @@
+%p#notice= notice
+%p
+  %strong Title:
+  = @book.title
+%p
+  %strong Category:
+  = @book.category
+%p
+  %strong Selling price:
+  = @book.selling_price
+%p
+  %strong Minimum threshold:
+  = @book.Minimum_threshold
+%p
+  %strong Available copies count:
+  = @book.Available_copies_count
+%p
+  %strong Publisher name:
+  = @book.PUBLISHER_Name
+%p
+  %strong Publish year:
+  = @book.publish_year
+= link_to 'Edit', edit_book_path(@book)
+|
+= link_to 'Back', books_path

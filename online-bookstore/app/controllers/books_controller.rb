@@ -81,9 +81,9 @@ class BooksController < ApplicationController
   end
 
   def cart 
-    user = SessionHelper.current_user
+    #user = SessionHelper.current_user
     books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
     books.append @book.ISBN 
-    cookies[:books_in_cart] = books.join(",")
+    cookies.permanent[:books_in_cart] = books.join(",")
   end
 end

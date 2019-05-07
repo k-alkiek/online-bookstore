@@ -1,0 +1,13 @@
+%p#notice= notice
+%p
+  %strong Name:
+  = @publisher.Name
+%p
+  %strong Address:
+  = @publisher.address
+%p
+  %strong Telephone:
+  = @publisher.telephone
+= link_to 'Edit', edit_publisher_path(@publisher)
+|
+= link_to 'Back', publishers_path

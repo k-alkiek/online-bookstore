@@ -1,0 +1,19 @@
+%p#notice= notice
+%p
+  %strong User:
+  = @purchase.User
+%p
+  %strong Book isbn:
+  = @purchase.BOOK_ISBN
+%p
+  %strong No of copies:
+  = @purchase.No_of_copies
+%p
+  %strong Price:
+  = @purchase.price
+%p
+  %strong Date of purchase:
+  = @purchase.date_of_purchase
+= link_to 'Edit', edit_purchase_path(@purchase)
+|
+= link_to 'Back', purchases_path

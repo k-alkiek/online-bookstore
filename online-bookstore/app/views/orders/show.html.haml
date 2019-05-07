@@ -1,0 +1,19 @@
+%p#notice= notice
+%p
+  %strong Date submitted:
+  = @order.date_submitted
+%p
+  %strong Estimated arrival date:
+  = @order.estimated_arrival_date
+%p
+  %strong Confirmed:
+  = @order.confirmed
+%p
+  %strong Book isbn:
+  = @order.BOOK_ISBN
+%p
+  %strong Quantity:
+  = @order.quantity
+= link_to 'Edit', edit_order_path(@order)
+|
+= link_to 'Back', orders_path

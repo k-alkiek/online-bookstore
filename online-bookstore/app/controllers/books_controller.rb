@@ -2,12 +2,12 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-  before_action :set_publishers, only: [:edit, :new]
+  before_action :set_publishers, only: [:edit, :new, :create,:update]
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.all
+    @books = Book.find_by_sql("SELECT * FROM BOOK")
   end
 
   # GET /books/1
@@ -29,10 +29,21 @@ class BooksController < ApplicationController
   def create
     @book = Book.new(book_params)
     respond_to do |format|
-      if @book.save
-        format.html { redirect_to @book, notice: 'Book was successfully created.'}
-        format.json { render :show, status: :created, location: @book }
-      else
+      begin
+        sql = "INSERT INTO BOOK
+        VALUES (\"#{params[:book][:ISBN]}\" ,
+                \"#{params[:book][:title]}\" ,
+                \"#{params[:book][:category]}\" ,
+                #{params[:book][:selling_price]} ,
+                #{params[:book][:Minimum_threshold]} ,
+                #{params[:book][:Available_copies_count]} ,
+                \"#{params[:book][:PUBLISHER_Name]}\",
+                \"#{params[:book]["publish_year(1i)"]}-#{params[:book]["publish_year(2i)"].rjust(2, '0')}-#{params[:book]["publish_year(3i)"].rjust(2, '0')}\")"
+        ActiveRecord::Base.connection.execute(sql)
+
+        format.html { redirect_to books_url, notice: 'Book was successfully created.'}
+        format.json { render :show, status: :created, location: books_path }
+      rescue
         format.html { render :new }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
@@ -43,10 +54,21 @@ class BooksController < ApplicationController
   # PATCH/PUT /books/1.json
   def update
     respond_to do |format|
-      if @book.update(book_params)
+      begin
+        sql = "UPDATE BOOK SET
+        ISBN = \"#{params[:book][:ISBN]}\"
+        ,title = \"#{params[:book][:title]}\"
+        ,category = \"#{params[:book][:category]}\"
+        ,selling_price = #{params[:book][:selling_price]}
+        ,Minimum_threshold = #{params[:book][:Minimum_threshold]}
+        ,Available_copies_count = #{params[:book][:Available_copies_count]}
+        ,PUBLISHER_name = \"#{params[:book][:PUBLISHER_Name]}\"
+        ,publish_year = \"#{params[:book]["publish_year(1i)"]}-#{params[:book]["publish_year(2i)"].rjust(2, '0')}-#{params[:book]["publish_year(3i)"].rjust(2, '0')}\"
+         where ISBN = \"#{params[:id]}\""
+        ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @book, notice: 'Book was successfully updated.' }
         format.json { render :show, status: :ok, location: @book }
-      else
+      rescue
         format.html { render :edit }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
@@ -56,7 +78,9 @@ class BooksController < ApplicationController
   # DELETE /books/1
   # DELETE /books/1.json
   def destroy
-    @book.destroy
+    sql = "Delete FROM BOOK Where ISBN = \"#{params[:id]}\""
+    ActiveRecord::Base.connection.execute(sql)
+
     respond_to do |format|
       format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
       format.json { head :no_content }
@@ -66,7 +90,7 @@ class BooksController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_book
-    @book = Book.find(params[:id])
+    @book = Book.find_by_sql("SELECT * FROM BOOK WHERE ISBN = \"#{params[:id]}\"")[0]
   end
 
 

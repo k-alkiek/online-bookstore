@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   resources :publishers
   resources :orders
   resources :book_authors
-  resources :books
+  resources :books do
+      collection do
+        post 'cart'
+      end
+  end
   resources :authors
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'

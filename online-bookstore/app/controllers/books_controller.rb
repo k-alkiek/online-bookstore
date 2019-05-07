@@ -1,5 +1,7 @@
 class BooksController < ApplicationController
+  protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :check_logged_in, only: [:create, :new, :update, :destroy]
 
   # GET /books
   # GET /books.json
@@ -25,10 +27,9 @@ class BooksController < ApplicationController
   # POST /books.json
   def create
     @book = Book.new(book_params)
-
     respond_to do |format|
       if @book.save
-        format.html { redirect_to @book, notice: 'Book was successfully created.' }
+        format.html { redirect_to @book, notice: 'Book was successfully created.'}
         format.json { render :show, status: :created, location: @book }
       else
         format.html { render :new }
@@ -62,13 +63,14 @@ class BooksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_book
-      @book = Book.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_book
+    @book = Book.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def book_params
-      params.require(:book).permit(:title, :category, :selling_price, :Minimum_threshold, :Available_copies_count, :PUBLISHER_Name, :publish_year)
-    end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def book_params
+    params.require(:book).permit(:title, :category, :selling_price, :Minimum_threshold, :Available_copies_count, :PUBLISHER_Name, :publish_year)
+  end
 end

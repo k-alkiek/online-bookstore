@@ -2,7 +2,7 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-  before_action :set_publishers, only: [:edit, :new]
+  before_action :set_publishers, only: [:edit, :new, :create,:update]
 
   # GET /books
   # GET /books.json

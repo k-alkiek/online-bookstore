@@ -5,7 +5,7 @@ class OrdersController < ApplicationController
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.all
+    @orders = Order.find_by_sql("SELECT * FROM `ORDER`")
   end
 
   # GET /orders/1
@@ -28,10 +28,18 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
 
     respond_to do |format|
-      if @order.save
-        format.html { redirect_to @order, notice: 'Order was successfully created.' }
+
+      begin
+
+        sql = "INSERT INTO `ORDER`
+       ( date_submitted , BOOK_ISBN, quantity)
+        VALUES ( curdate(),
+        \"#{params[:order][:BOOK_ISBN]}\", #{params[:order][:quantity].to_i})"
+        ActiveRecord::Base.connection.execute(sql)
+        @orders = Order.find_by_sql("SELECT * FROM `ORDER`")
+        format.html { redirect_to @orders, notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
-      else
+      rescue
         format.html { render :new }
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
@@ -42,12 +50,19 @@ class OrdersController < ApplicationController
   # PATCH/PUT /orders/1.json
   def update
     respond_to do |format|
-      if @order.update(order_params)
+      begin
+        sql = "UPDATE `ORDER` SET
+        estimated_arrival_date = \"#{params[:user][:estimated_arrival_date]}\"
+        ,confirmed = \"#{params[:user][:confirmed]}\"
+        ,BOOK_ISBN = \"#{params[:user][:BOOK_ISBN]}\"
+        ,address = \"#{params[:user][:quantity]}\" where id = #{params[:id].to_i}"
+        ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
         format.json { render :show, status: :ok, location: @order }
-      else
+      rescue
         format.html { render :edit }
         format.json { render json: @order.errors, status: :unprocessable_entity }
+
       end
     end
   end
@@ -55,7 +70,8 @@ class OrdersController < ApplicationController
   # DELETE /orders/1
   # DELETE /orders/1.json
   def destroy
-    @order.destroy
+    sql = "Delete FROM `ORDER` Where id = #{params[:id].to_i}"
+    ActiveRecord::Base.connection.execute(sql)
     respond_to do |format|
       format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
       format.json { head :no_content }
@@ -65,7 +81,7 @@ class OrdersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_order
-      @order = Order.find(params[:id])
+      @order = Order.find_by_sql("SELECT * FROM `ORDER` Where id = #{params[:id].to_i}")[0]
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

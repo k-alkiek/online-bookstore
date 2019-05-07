@@ -8,6 +8,9 @@
         - book.errors.full_messages.each do |message|
           %li= message
   .field
+    = form.label :ISBN
+    = form.text_field :ISBN
+  .field
     = form.label :title
     = form.text_field :title
   .field
@@ -24,7 +27,10 @@
     = form.number_field :Available_copies_count
   .field
     = form.label :PUBLISHER_Name
-    = form.text_field :PUBLISHER_Name
+    = form.collection_select :PUBLISHER_Name, @publishers,:Name,:Name, include_blank: false
+  / .field
+  /   = form.label :PUBLISHER_Name
+  /   = form.text_field :PUBLISHER_Name
   .field
     = form.label :publish_year
     = form.date_select :publish_year

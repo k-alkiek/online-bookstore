@@ -8,6 +8,9 @@
         - publisher.errors.full_messages.each do |message|
           %li= message
   .field
+    = form.label :Name
+    = form.text_field :Name
+  .field
     = form.label :address
     = form.text_field :address
   .field

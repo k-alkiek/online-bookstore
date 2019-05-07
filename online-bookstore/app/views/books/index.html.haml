@@ -3,6 +3,7 @@
 %table
   %thead
     %tr
+      %th ISBN
       %th Title
       %th Category
       %th Selling price
@@ -14,6 +15,7 @@
   %tbody
     - @books.each do |book|
       %tr
+        %td= book.ISBN
         %td= book.title
         %td= book.category
         %td= book.selling_price

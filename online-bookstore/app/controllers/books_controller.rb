@@ -2,6 +2,7 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
+  before_action :set_publishers, only: [:edit, :new]
 
   # GET /books
   # GET /books.json
@@ -71,6 +72,10 @@ class BooksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def book_params
-    params.require(:book).permit(:title, :category, :selling_price, :Minimum_threshold, :Available_copies_count, :PUBLISHER_Name, :publish_year)
+    params.require(:book).permit(:ISBN, :title, :category, :selling_price, :Minimum_threshold, :Available_copies_count, :PUBLISHER_Name, :publish_year)
+  end
+
+  def set_publishers
+    @publishers = Publisher.all
   end
 end

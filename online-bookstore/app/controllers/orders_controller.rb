@@ -37,7 +37,7 @@ class OrdersController < ApplicationController
         \"#{params[:order][:BOOK_ISBN]}\", #{params[:order][:quantity].to_i})"
         ActiveRecord::Base.connection.execute(sql)
         @orders = Order.find_by_sql("SELECT * FROM `ORDER`")
-        format.html { redirect_to @orders, notice: 'Order was successfully created.' }
+        format.html { redirect_to orders_url, notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
       rescue
         format.html { render :new }

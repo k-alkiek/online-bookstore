@@ -1,0 +1,24 @@
+%p#notice= notice
+%h1 Orders
+%table
+  %thead
+    %tr
+      %th Date submitted
+      %th Estimated arrival date
+      %th Confirmed
+      %th Book isbn
+      %th Quantity
+      %th{:colspan => "3"}
+  %tbody
+    - @orders.each do |order|
+      %tr
+        %td= order.date_submitted
+        %td= order.estimated_arrival_date
+        %td= order.confirmed
+        %td= order.BOOK_ISBN
+        %td= order.quantity
+        %td= link_to 'Show', order
+        %td= link_to 'Edit', edit_order_path(order)
+        %td= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' }
+%br/
+= link_to 'New Order', new_order_path

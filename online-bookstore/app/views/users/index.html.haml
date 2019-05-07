@@ -1,0 +1,30 @@
+%p#notice= notice
+%h1 Users
+%table
+  %thead
+    %tr
+      %th Email
+      %th Password
+      %th First name
+      %th Last name
+      %th Phone
+      %th Address
+      %th Ismanager
+      %th Date joined
+      %th{:colspan => "3"}
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td= user.email
+        %td= user.password
+        %td= user.first_name
+        %td= user.last_name
+        %td= user.phone
+        %td= user.address
+        %td= user.isManager
+        %td= user.date_joined
+        %td= link_to 'Show', user
+        %td= link_to 'Edit', edit_user_path(user)
+        %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+%br/
+= link_to 'New User', new_user_path

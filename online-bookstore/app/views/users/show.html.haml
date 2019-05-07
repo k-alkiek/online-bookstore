@@ -1,0 +1,28 @@
+%p#notice= notice
+%p
+  %strong Email:
+  = @user.email
+%p
+  %strong Password:
+  = @user.password
+%p
+  %strong First name:
+  = @user.first_name
+%p
+  %strong Last name:
+  = @user.last_name
+%p
+  %strong Phone:
+  = @user.phone
+%p
+  %strong Address:
+  = @user.address
+%p
+  %strong Ismanager:
+  = @user.isManager
+%p
+  %strong Date joined:
+  = @user.date_joined
+= link_to 'Edit', edit_user_path(@user)
+|
+= link_to 'Back', users_path

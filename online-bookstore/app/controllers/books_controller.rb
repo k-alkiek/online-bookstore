@@ -1,5 +1,4 @@
 class BooksController < ApplicationController
-  include SessionsHelper
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
@@ -78,14 +77,5 @@ class BooksController < ApplicationController
 
   def set_publishers
     @publishers = Publisher.all
-  end
-
-  public
-  def cart
-    #user = SessionHelper.current_user
-    @book = Book.find(params[:ISBN])
-    @cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
-    @cart_books.push @book.ISBN
-    cookies.permanent[:books_in_cart] = @cart_books_arr
   end
 end

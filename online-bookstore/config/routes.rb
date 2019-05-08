@@ -1,15 +1,13 @@
 Rails.application.routes.draw do
+  post 'cart/add_to_cart'
+  get 'cart/show'
   get 'sessions/new'
   resources :users
   resources :purchases
   resources :publishers
   resources :orders
   resources :book_authors
-  resources :books do
-      collection do
-        post 'cart'
-      end
-  end
+  resources :books
   resources :authors
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'

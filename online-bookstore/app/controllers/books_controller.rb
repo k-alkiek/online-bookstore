@@ -8,8 +8,9 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
+    add_filters
     @books = if params[:isbn].nil?
-      Book.search(params[:name], params[:filters])
+      Book.search(params[:name], @filters)
     else
       Book.isbn_search(params[:isbn])
              end
@@ -107,4 +108,29 @@ class BooksController < ApplicationController
   def set_publishers
     @publishers = Publisher.all
   end
+
+  def add_filters
+    @filters = []
+    if @search_with_publishers
+
+    end
+
+    if @search_with_authors
+
+    end
+
+    if @search_with_price_range
+
+    end
+
+    if @search_with_categories
+
+    end
+
+    if @search_with_publication_year
+
+    end
+
+  end
+
 end

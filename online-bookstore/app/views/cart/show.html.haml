@@ -13,9 +13,8 @@
       %th{:colspan => "3"}
   %tbody
     - @rows.each do |book|
-    %tr
-      -book.each do |field|
-    %td= field
-    %td
+      %tr
+        -book.each do |field|
+          %td= field
     
 %br/

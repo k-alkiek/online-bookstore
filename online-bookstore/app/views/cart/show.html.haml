@@ -1,4 +1,5 @@
 %h1 Books added to the shopping cart:
+-total_price = 0
 %table
  %thead
   %tr
@@ -21,7 +22,14 @@
       = form.hidden_field :ISBN, value: row.first
       = form.number_field :newquantity, value: quantity, min: 1, max: row[4], step: 1
       = form.submit 'Edit quantity'
+    %td
+     - total_price += quantity.to_i * row[3]
+     = 'total individual price: ' + (quantity.to_i * row[3]).to_s + "L.E"
 %br
 %p= 'total number of books:' 
 %p #{@result.count}
 
+= form_with url: purchases_path do |form|
+ = form.label :Total_Price
+ = form.text_field :total_price, value: (total_price).to_s + "L.E", readonly: true
+ = form.submit 'Check out'

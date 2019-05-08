@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root 'sessions#new'
   get 'sessions/new'
+  get 'orders/confirm'
+  get 'orders/unconfirm'
   resources :users
   resources :purchases
   resources :publishers

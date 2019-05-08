@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: [:show, :edit, :update, :destroy,:confirm]
   before_action :check_logged_in
   # GET /orders
   # GET /orders.json
@@ -76,6 +76,22 @@ class OrdersController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
+
+  def confirm
+    sql = "UPDATE `ORDER` SET confirmed = TRUE where id = #{params[:id] }"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to orders_url
+  end
+
+  def unconfirm
+    sql = "UPDATE `ORDER` SET confirmed = FALSE where id = #{params[:id] }"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to orders_url
+  end
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

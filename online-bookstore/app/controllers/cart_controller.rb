@@ -28,9 +28,7 @@ class CartController < ApplicationController
 
   def edit
   	index = @cart_books.index(params[:ISBN])
-  	binding.pry
   	@book_quantity[index] = params[:newquantity]
-  	binding.pry
   	book_quantity_str = @book_quantity.join(",")
   	cookies.permanent[:quantity_ordered] = book_quantity_str
   	redirect_to action: 'show'

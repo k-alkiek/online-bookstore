@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.find_by_sql("SELECT * FROM User")
+    @users = User.find_by_sql("SELECT * FROM User").paginate(:page => params[:page] || 1,:per_page => 50)
   end
 
   # GET /users/1

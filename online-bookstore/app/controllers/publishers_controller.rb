@@ -5,7 +5,7 @@ class PublishersController < ApplicationController
   # GET /publishers
   # GET /publishers.json
   def index
-    @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER")
+    @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER").paginate(:page => params[:page] || 1,:per_page => 20)
   end
 
   # GET /publishers/1

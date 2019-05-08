@@ -5,7 +5,7 @@ class PurchasesController < ApplicationController
   # GET /purchases
   # GET /purchases.json
   def index
-    @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE")
+    @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE").paginate(:page => params[:page] || 1,:per_page => 50)
   end
 
   # GET /purchases/1

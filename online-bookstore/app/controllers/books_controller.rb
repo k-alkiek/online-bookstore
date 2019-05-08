@@ -14,6 +14,7 @@ class BooksController < ApplicationController
     else
       Book.isbn_search(params[:isbn])
              end
+    @filters = nil
   end
 
   # GET /books/1
@@ -110,25 +111,38 @@ class BooksController < ApplicationController
   end
 
   def add_filters
+
     @filters = []
-    if @search_with_publishers
+    @name = if params[:name].present?
+              params[:name]
+            else
+              nil
+            end
 
+    if params[:author].present?
+      authors_ids = ActiveRecord::Base.connection.execute("SELECT id FROM AUTHOR where Author_name = \"#{params[:author]}\"").map {|e| e = e[0]}
+      books_isbn = ActiveRecord::Base.connection.execute("SELECT Distinct BOOK_ISBN FROM BOOK_AUTHOR WHERE AUTHOR_id IN (#{authors_ids.join(", ")})").map {|e| e = e[0]}
+      @filters.push(" ISBN IN (\"#{books_isbn.join("\", \"")}\")")
     end
 
-    if @search_with_authors
-
+    if params[:publisher].present?
+      @filters.push(" PUBLISHER_Name ='#{params[:publisher]}'")
     end
 
-    if @search_with_price_range
-
+    if params[:category].present?
+      @filters.push(" category ='#{params[:category]}'")
     end
 
-    if @search_with_categories
-
+    if params[:publish_date].present?
+      @filters.push(" publish_year LIKE '%#{params[:publish_date]}-__-__'")
     end
 
-    if @search_with_publication_year
+    if params[:price_from].present?
+      @filters.push(" selling_price >= #{params[:price_from]}")
+    end
 
+    if params[:price_to].present?
+      @filters.push(" selling_price <= #{params[:price_to]}")
     end
 
   end

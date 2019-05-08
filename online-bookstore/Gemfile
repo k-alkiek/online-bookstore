@@ -49,6 +49,8 @@ group :development, :test do
   gem 'pry', '~> 0.12.2'
   gem 'pry-rails'
   gem 'rb-readline'
+
+  gem 'faker'
 end
 
 group :development do

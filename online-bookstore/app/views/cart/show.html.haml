@@ -15,10 +15,10 @@
    %tr
    -row.each do |field|
     %td= field
-   %td= link_to 'Remove', controller: "cart", action: "delete", params: {book: row}
+   %td= link_to 'Remove', controller: "cart", action: "delete", params: {ISBN: row.first}
    %td
     = form_with url: cart_edit_path do |form|
-     = form.hidden_field :book, value: row
+     = form.hidden_field :ISBN, value: row.first
      = form.number_field :newquantity, value: quantity, min: 1, max: row[4], step: 1
      = form.submit 'Edit quantity'
 %br

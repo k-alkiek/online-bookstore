@@ -27,15 +27,17 @@ class CartController < ApplicationController
   end
 
   def edit
-  	index = @cart_books.index(params[:book][0])
+  	index = @cart_books.index(params[:ISBN])
+  	binding.pry
   	@book_quantity[index] = params[:newquantity]
+  	binding.pry
   	book_quantity_str = @book_quantity.join(",")
   	cookies.permanent[:quantity_ordered] = book_quantity_str
   	redirect_to action: 'show'
   end
 
   def delete
-  	index = @cart_books.index(params[:book][0])
+  	index = @cart_books.index(params[:ISBN])
   	@cart_books.delete_at(index)
   	@book_quantity.delete_at(index)
   	cart_books_str = @cart_books.join(",")

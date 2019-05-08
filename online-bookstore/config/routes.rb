@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   post 'cart/add_to_cart'
   get 'cart/show'
-  get 'cart/edit'
+  post 'cart/edit'
   get 'cart/delete'
   get 'sessions/new'
   resources :users

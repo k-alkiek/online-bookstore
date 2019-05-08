@@ -23,6 +23,9 @@
 %p
   %strong Publish year:
   = @book.publish_year
+%p
+  %strong Authors:
+  = @book_authors.map(&:Author_name).reduce("") {|s, a| s += a + ', '}.chomp(', ')
 = link_to 'Edit', edit_book_path(@book)
 |
 = link_to 'Back', books_path

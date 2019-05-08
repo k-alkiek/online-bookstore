@@ -1,0 +1,8 @@
+.nested-fields
+  .field
+    = form.label :Author
+    / %br
+    = form.collection_select :AUTHOR_id, @authors,:id,:Author_name, include_blank: false
+
+    //# = form.text_field :AUTHOR_id
+  = link_to_remove_association "remove author", form

@@ -3,7 +3,7 @@ class BooksController < ApplicationController
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in
   before_action :set_publishers, only: [:edit, :new, :create,:update,:index]
-
+  before_action :set_authors, only: [:edit, :new, :update, :create]
 
   # GET /books
   # GET /books.json
@@ -21,6 +21,8 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
+    sql = "SELECT id, Author_name FROM AUTHOR JOIN BOOK_AUTHOR ON id = AUTHOR_id WHERE BOOK_ISBN = \"#{@book.id}\""
+    @book_authors = Author.find_by_sql(sql)
   end
 
   # GET /books/new
@@ -74,9 +76,18 @@ class BooksController < ApplicationController
         ,publish_year = \"#{params[:book]["publish_year(1i)"]}-#{params[:book]["publish_year(2i)"].rjust(2, '0')}-#{params[:book]["publish_year(3i)"].rjust(2, '0')}\"
          where ISBN = \"#{params[:id]}\""
         ActiveRecord::Base.connection.execute(sql)
+
+        authors = []
+        params[:book][:book_authors_attributes].each { |k, h| authors.push(h["AUTHOR_id"]) }
+        delete_book_authors_sql = "DELETE FROM BOOK_AUTHOR WHERE BOOK_ISBN = \"#{params[:book][:ISBN]}\""
+        insert_book_author_sql = "INSERT INTO BOOK_AUTHOR VALUES (\"#{params[:book][:ISBN]}\", \"%d\")"
+        ActiveRecord::Base.connection.execute(delete_book_authors_sql)
+        authors.each { |a|  ActiveRecord::Base.connection.execute(insert_book_author_sql % a) }
+
         format.html { redirect_to @book, notice: 'Book was successfully updated.' }
         format.json { render :show, status: :ok, location: @book }
       rescue
+
         format.html { render :edit }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
@@ -108,7 +119,11 @@ class BooksController < ApplicationController
   end
 
   def set_publishers
-    @publishers = Publisher.all
+    @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER ORDER BY Name ASC")
+  end
+
+  def set_authors
+    @authors = Author.find_by_sql("SELECT * FROM AUTHOR ORDER BY Author_name ASC")
   end
 
   def add_filters

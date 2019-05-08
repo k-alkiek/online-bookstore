@@ -28,11 +28,16 @@
   .field
     = form.label :PUBLISHER_Name
     = form.collection_select :PUBLISHER_Name, @publishers,:Name,:Name, include_blank: false
-  / .field
-  /   = form.label :PUBLISHER_Name
-  /   = form.text_field :PUBLISHER_Name
   .field
     = form.label :publish_year
     = form.date_select :publish_year
+
+  .field
+    %h3 Authors
+    #book-authors
+      = form.fields_for :book_authors do |book_author|
+        = render 'book_author_fields', form: book_author
+      .links
+        = link_to_add_association 'add author', form, :book_authors, form_name: :form
   .actions
     = form.submit

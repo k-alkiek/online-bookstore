@@ -2,7 +2,8 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-  before_action :set_publishers, only: [:edit, :new, :create,:update]
+  before_action :set_publishers, only: [:edit, :new, :update, :create]
+  before_action :set_authors, only: [:edit, :new, :update, :create]
 
   # GET /books
   # GET /books.json
@@ -68,9 +69,18 @@ class BooksController < ApplicationController
         ,publish_year = \"#{params[:book]["publish_year(1i)"]}-#{params[:book]["publish_year(2i)"].rjust(2, '0')}-#{params[:book]["publish_year(3i)"].rjust(2, '0')}\"
          where ISBN = \"#{params[:id]}\""
         ActiveRecord::Base.connection.execute(sql)
+
+        authors = []
+        params[:book][:book_authors_attributes].each { |k, h| authors.push(h["AUTHOR_id"]) }
+        delete_book_authors_sql = "DELETE FROM BOOK_AUTHOR WHERE BOOK_ISBN = \"#{params[:book][:ISBN]}\""
+        insert_book_author_sql = "INSERT INTO BOOK_AUTHOR VALUES (\"#{params[:book][:ISBN]}\", \"%d\")"
+        ActiveRecord::Base.connection.execute(delete_book_authors_sql)
+        authors.each { |a|  ActiveRecord::Base.connection.execute(insert_book_author_sql % a) }
+
         format.html { redirect_to @book, notice: 'Book was successfully updated.' }
         format.json { render :show, status: :ok, location: @book }
       rescue
+
         format.html { render :edit }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
@@ -102,6 +112,10 @@ class BooksController < ApplicationController
   end
 
   def set_publishers
-    @publishers = Publisher.all
+    @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER ORDER BY Name ASC")
+  end
+
+  def set_authors
+    @authors = Author.find_by_sql("SELECT * FROM AUTHOR ORDER BY Author_name ASC")
   end
 end

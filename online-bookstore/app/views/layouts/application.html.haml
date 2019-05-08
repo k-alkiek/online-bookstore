@@ -8,4 +8,13 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
+    = form_tag books_path, :method => 'get' do
+      = text_field_tag :name, params[:name],placeholder: "Name of book"
+      = submit_tag  "Search" , :name => nil
+      .field
+        = collection_select :PUBLISHER_Name, @publishers,:Name,:Name, include_blank: false
+
+    = form_tag books_path, :method => 'get' do
+      = text_field_tag :isbn, params[:isbn], placeholder: "ISBN"
+      = submit_tag  "Search" , :isbn => nil
     = yield

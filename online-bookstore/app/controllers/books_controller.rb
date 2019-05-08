@@ -2,12 +2,17 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-  before_action :set_publishers, only: [:edit, :new, :create,:update]
+  before_action :set_publishers, only: [:edit, :new, :create,:update,:index]
+
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.find_by_sql("SELECT * FROM BOOK")
+    @books = if params[:isbn].nil?
+      Book.search(params[:name], params[:filters])
+    else
+      Book.isbn_search(params[:isbn])
+             end
   end
 
   # GET /books/1

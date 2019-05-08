@@ -1,6 +1,6 @@
 class PublishersController < ApplicationController
   before_action :set_publisher, only: [:show, :edit, :update, :destroy]
-  before_action :check_logged_in, only: [:create, :new, :update, :destroy]
+  before_action :check_logged_in
 
   # GET /publishers
   # GET /publishers.json

@@ -1,7 +1,6 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
-  before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-
+  before_action :check_logged_in
   # GET /orders
   # GET /orders.json
   def index

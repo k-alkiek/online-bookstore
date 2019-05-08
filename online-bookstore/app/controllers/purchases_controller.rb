@@ -1,5 +1,6 @@
 class PurchasesController < ApplicationController
   before_action :set_purchase, only: [:show, :edit, :update, :destroy]
+  before_action :check_logged_in
 
   # GET /purchases
   # GET /purchases.json

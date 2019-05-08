@@ -2,12 +2,19 @@ class BooksController < ApplicationController
   protect_from_forgery
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
-  before_action :set_publishers, only: [:edit, :new, :create,:update]
+  before_action :set_publishers, only: [:edit, :new, :create,:update,:index]
+
 
   # GET /books
   # GET /books.json
   def index
-    @books = Book.find_by_sql("SELECT * FROM BOOK")
+    add_filters
+    @books = if params[:isbn].nil?
+      Book.search(params[:name], @filters)
+    else
+      Book.isbn_search(params[:isbn])
+             end
+    @filters = nil
   end
 
   # GET /books/1
@@ -102,4 +109,42 @@ class BooksController < ApplicationController
   def set_publishers
     @publishers = Publisher.all
   end
+
+  def add_filters
+
+    @filters = []
+    @name = if params[:name].present?
+              params[:name]
+            else
+              nil
+            end
+
+    if params[:author].present?
+      authors_ids = ActiveRecord::Base.connection.execute("SELECT id FROM AUTHOR where Author_name = \"#{params[:author]}\"").map {|e| e = e[0]}
+      books_isbn = ActiveRecord::Base.connection.execute("SELECT Distinct BOOK_ISBN FROM BOOK_AUTHOR WHERE AUTHOR_id IN (#{authors_ids.join(", ")})").map {|e| e = e[0]}
+      @filters.push(" ISBN IN (\"#{books_isbn.join("\", \"")}\")")
+    end
+
+    if params[:publisher].present?
+      @filters.push(" PUBLISHER_Name ='#{params[:publisher]}'")
+    end
+
+    if params[:category].present?
+      @filters.push(" category ='#{params[:category]}'")
+    end
+
+    if params[:publish_date].present?
+      @filters.push(" publish_year LIKE '%#{params[:publish_date]}-__-__'")
+    end
+
+    if params[:price_from].present?
+      @filters.push(" selling_price >= #{params[:price_from]}")
+    end
+
+    if params[:price_to].present?
+      @filters.push(" selling_price <= #{params[:price_to]}")
+    end
+
+  end
+
 end

@@ -13,11 +13,15 @@
       = submit_tag  "Search" , :isbn => nil
     %br
     = form_tag books_path, :method => 'get' do
-      = text_field_tag :name, params[:name],placeholder: "Title"
-      = text_field_tag :author, params[:author],placeholder: "Author"
-      = text_field_tag :publisher, params[:publisher],placeholder: "Publisher"
+      = text_field_tag :name, params[:name], placeholder: "Title"
+      = text_field_tag :author, params[:author], placeholder: "Author"
+      = text_field_tag :publisher, params[:publisher], placeholder: "Publisher"
       = select_tag :category, options_for_select(["Science", "Art", "Religion", "History", "Geography"]), include_blank: "Select Category"
-      = submit_tag  "Search" , :name => nil
+      %br
+      = number_field_tag :price_from, params[:price_from], placeholder: "Price Lower Range"
+      = number_field_tag :price_to, params[:price_to], placeholder: "Price Upper Range"
+      = number_field_tag :publish_date, params[:publish_date], placeholder: "Publish Year"
+      = submit_tag  "Search", :name => nil
 
 
     = yield

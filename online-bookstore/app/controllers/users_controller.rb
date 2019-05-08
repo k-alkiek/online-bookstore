@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   protect_from_forgery
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_logged_in
 
   # GET /users
   # GET /users.json

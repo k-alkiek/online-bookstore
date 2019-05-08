@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   get 'cart/delete'
   get 'sessions/new'
   resources :users
-  resources :purchases
+  resources :purchases do
+    collection do
+      post 'checkout'
+    end
+  end
   resources :publishers
   resources :orders
   resources :book_authors

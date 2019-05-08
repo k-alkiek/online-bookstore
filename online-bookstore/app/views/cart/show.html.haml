@@ -10,7 +10,7 @@
    %th Available copies count
    %th Publisher name
    %th Publish year
-   %th{:colspan => "3"}
+   %th{:colspan => "5"}
  %tbody
   -@result.zip(@book_quantity).each do |row, quantity|
    %tr{:style => (quantity.to_i > row[4] ? "background-color: red;" : "")}
@@ -29,7 +29,7 @@
 %p= 'total number of books:' 
 %p #{@result.count}
 
-= form_with url: purchases_path do |form|
+= form_with url:checkout_purchases_path do |form|
  = form.label :Total_Price
  = form.text_field :total_price, value: (total_price).to_s + "L.E", readonly: true
  = form.submit 'Check out'

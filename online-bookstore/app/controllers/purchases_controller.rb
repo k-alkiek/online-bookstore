@@ -61,6 +61,11 @@ class PurchasesController < ApplicationController
     end
   end
 
+  public 
+  def checkout
+    binding.pry
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase

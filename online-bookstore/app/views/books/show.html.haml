@@ -26,4 +26,4 @@
 = link_to 'Edit', edit_book_path(@book)
 |
 = link_to 'Back', books_path
-= button_to "Add to shopping cart", action: "cart"
+= button_to "Add to shopping cart", action: "cart" , :ISBN => @book.ISBN

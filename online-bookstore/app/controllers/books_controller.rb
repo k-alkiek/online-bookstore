@@ -80,10 +80,12 @@ class BooksController < ApplicationController
     @publishers = Publisher.all
   end
 
-  def cart 
+  public
+  def cart
     #user = SessionHelper.current_user
-    books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
-    books.append @book.ISBN 
-    cookies.permanent[:books_in_cart] = books.join(",")
+    @book = Book.find(params[:ISBN])
+    @cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
+    @cart_books.push @book.ISBN
+    cookies.permanent[:books_in_cart] = @cart_books_arr
   end
 end

@@ -11,10 +11,16 @@
    %th Publish year
    %th{:colspan => "3"}
  %tbody
-  -@result.each do |row|
+  -@result.zip(@book_quantity).each do |row, quantity|
    %tr
    -row.each do |field|
     %td= field
+   %td= link_to 'Remove', controller: "cart", action: "delete", params: {book: row}
+   %td
+    = form_with url: cart_edit_path do |form|
+     = form.hidden_field :book, value: row
+     = form.number_field :newquantity, value: quantity, min: 1, max: row[4], step: 1
+     = form.submit 'Edit quantity'
 %br
 %p= 'total number of books:' 
 %p #{@result.count}

@@ -13,6 +13,7 @@
       %th Date joined
       %th{:colspan => "3"}
   %tbody
+    = will_paginate
     - @users.each do |user|
       %tr
         %td= user.email
@@ -23,8 +24,15 @@
         %td= user.address
         %td= user.isManager
         %td= user.date_joined
+        - if logged_in? && current_user.isManager
+          %td= link_to 'Promote', users_promote_url(:id =>user.id)
+        - if logged_in? && current_user.id == 1
+          %td= link_to 'Demote', users_demote_url(:id =>user.id)
+
         %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+        - if logged_in? && current_user.isManager
+          %td= link_to 'Edit', edit_user_path(user)
+          %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+= will_paginate
 = link_to 'New User', new_user_path

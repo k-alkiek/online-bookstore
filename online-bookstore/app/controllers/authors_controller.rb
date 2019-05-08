@@ -5,7 +5,7 @@ class AuthorsController < ApplicationController
   # GET /authors
   # GET /authors.json
   def index
-    @authors = Author.find_by_sql("SELECT * FROM AUTHOR")
+    @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
   end
 
   # GET /authors/1

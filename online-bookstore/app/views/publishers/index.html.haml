@@ -8,6 +8,7 @@
       %th Telephone
       %th{:colspan => "3"}
   %tbody
+    = will_paginate
     - @publishers.each do |publisher|
       %tr
         %td= publisher.Name
@@ -17,4 +18,5 @@
         %td= link_to 'Edit', edit_publisher_path(publisher)
         %td= link_to 'Destroy', publisher, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+= will_paginate
 = link_to 'New Publisher', new_publisher_path

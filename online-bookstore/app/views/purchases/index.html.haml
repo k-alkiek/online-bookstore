@@ -10,6 +10,7 @@
       %th Date of purchase
       %th{:colspan => "3"}
   %tbody
+    = will_paginate
     - @purchases.each do |purchase|
       %tr
         %td= purchase.User
@@ -21,4 +22,5 @@
         %td= link_to 'Edit', edit_purchase_path(purchase)
         %td= link_to 'Destroy', purchase, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+= will_paginate
 = link_to 'New Purchase', new_purchase_path

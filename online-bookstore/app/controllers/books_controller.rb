@@ -14,6 +14,7 @@ class BooksController < ApplicationController
     else
       Book.isbn_search(params[:isbn])
              end
+    @books = @books.paginate(:page => params[:page] || 1,:per_page => 50)
     @filters = nil
   end
 

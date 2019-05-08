@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.find_by_sql("SELECT * FROM User")
+    @users = User.find_by_sql("SELECT * FROM User").paginate(:page => params[:page] || 1,:per_page => 50)
   end
 
   # GET /users/1
@@ -89,6 +89,20 @@ class UsersController < ApplicationController
       format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+
+  def promote
+    sql = "UPDATE  User SET isManager = true Where id = #{params[:id].to_i}"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to users_url
+  end
+
+
+  def demote
+    sql = "UPDATE  User SET isManager = false Where id = #{params[:id].to_i}"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to users_url
   end
 
   private

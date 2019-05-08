@@ -7,7 +7,7 @@ class CartController < ApplicationController
  	c = p.connection
   	@rows = []
 	@cart_books.each do |book|
-		result = c.execute("select * from BOOK where ISBN =  \"#{book}\"")
+		result = c.execute("select ISBN,title,category,selling_price,PUBLISHER_Name,publish_year from BOOK where ISBN =  \"#{book}\"")
 		@rows.push result.first
 	end
   end
@@ -24,6 +24,6 @@ class CartController < ApplicationController
   private
   def set_cart_books
   	@cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
-  	@quantity = cookies[:no_of_books] ? cookies[:no_of_books] : 0
+  	@quantity = cookies[:no_of_books].to_i ? cookies[:no_of_books] : 0
   end
 end

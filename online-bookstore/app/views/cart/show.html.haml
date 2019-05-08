@@ -1,21 +1,18 @@
 %h1 Books added to the shopping cart:
 %table
-  %thead
-    %tr
-      %th ISBN
-      %th Title
-      %th Category
-      %th Selling price
-      %th Minimum threshold
-      %th Available copies count
-      %th Publisher name
-      %th Publish year
-      %th{:colspan => "3"}
-  %tbody
-    - @rows.each do |book|
-    %tr
-      -book.each do |field|
+ %thead
+  %tr
+   %th ISBN
+   %th Title
+   %th Category
+   %th Selling price
+   %th Publisher name
+   %th Publish year
+   %th{:colspan => "3"}
+ %tbody
+  -@rows.each do |book|
+   %tr
+   -book.each do |field|
     %td= field
-    %td
-    
-%br/
+%br
+%p= 'total number of books:' + @quantity

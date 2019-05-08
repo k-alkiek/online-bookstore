@@ -91,6 +91,20 @@ class UsersController < ApplicationController
     end
   end
 
+
+  def promote
+    sql = "UPDATE  User SET isManager = true Where id = #{params[:id].to_i}"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to users_url
+  end
+
+
+  def demote
+    sql = "UPDATE  User SET isManager = false Where id = #{params[:id].to_i}"
+    ActiveRecord::Base.connection.execute(sql)
+    redirect_to users_url
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_user

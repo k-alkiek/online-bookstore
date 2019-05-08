@@ -6,14 +6,16 @@
    %th Title
    %th Category
    %th Selling price
+   %th Available copies count
    %th Publisher name
    %th Publish year
    %th{:colspan => "3"}
  %tbody
-  -@rows.each do |book|
+  -@result.each do |row|
    %tr
-   -book.each do |field|
+   -row.each do |field|
     %td= field
 %br
-%p= 'total number of books:' + @quantity
+%p= 'total number of books:' 
+%p #{@result.count}
 

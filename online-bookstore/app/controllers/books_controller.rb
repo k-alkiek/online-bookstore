@@ -13,6 +13,8 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
+    sql = "SELECT id, Author_name FROM AUTHOR JOIN BOOK_AUTHOR ON id = AUTHOR_id WHERE BOOK_ISBN = \"#{@book.id}\""
+    @book_authors = Author.find_by_sql(sql)
   end
 
   # GET /books/new

@@ -10,7 +10,7 @@ class Book < ApplicationRecord
       sql = "SELECT * FROM BOOK WHERE lower(title) LIKE '%#{name.to_s.downcase}%'"
       flag = true
     end
-    unless filters.nil?
+    if filters.present?
       unless flag
         sql = sql + " WHERE "
       end

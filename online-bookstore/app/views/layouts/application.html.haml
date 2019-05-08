@@ -9,12 +9,15 @@
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
     = form_tag books_path, :method => 'get' do
-      = text_field_tag :name, params[:name],placeholder: "Name of book"
-      = submit_tag  "Search" , :name => nil
-      .field
-        = collection_select :PUBLISHER_Name, @publishers,:Name,:Name, include_blank: false
-
-    = form_tag books_path, :method => 'get' do
       = text_field_tag :isbn, params[:isbn], placeholder: "ISBN"
       = submit_tag  "Search" , :isbn => nil
+    %br
+    = form_tag books_path, :method => 'get' do
+      = text_field_tag :name, params[:name],placeholder: "Title"
+      = text_field_tag :author, params[:author],placeholder: "Author"
+      = text_field_tag :publisher, params[:publisher],placeholder: "Publisher"
+      = select_tag :category, options_for_select(["Science", "Art", "Religion", "History", "Geography"]), include_blank: "Select Category"
+      = submit_tag  "Search" , :name => nil
+
+
     = yield

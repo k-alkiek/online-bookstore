@@ -1,5 +1,7 @@
 class BooksController < ApplicationController
   protect_from_forgery
+  load_and_authorize_resource
+  
   before_action :set_book, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
   before_action :set_publishers, only: [:edit, :new]
@@ -7,6 +9,7 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
+
     @books = Book.all
   end
 

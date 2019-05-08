@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
   protect_from_forgery
+  load_and_authorize_resource
+  
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
 

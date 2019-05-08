@@ -1,4 +1,6 @@
 class AuthorsController < ApplicationController
+  load_and_authorize_resource
+  
   before_action :set_author, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in, only: [:create, :new, :update, :destroy]
 

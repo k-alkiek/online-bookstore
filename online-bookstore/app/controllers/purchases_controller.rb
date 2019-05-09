@@ -5,7 +5,11 @@ class PurchasesController < ApplicationController
   # GET /purchases
   # GET /purchases.json
   def index
-    @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE").paginate(:page => params[:page] || 1,:per_page => 50)
+    if current_user.isManager
+      @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE").paginate(:page => params[:page] || 1,:per_page => 50)
+    else
+      @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE Where User_id = #{current_user.id.to_i} ").paginate(:page => params[:page] || 1,:per_page => 50)
+    end
   end
 
   # GET /purchases/1
@@ -30,10 +34,10 @@ class PurchasesController < ApplicationController
     respond_to do |format|
       begin
         sql = "INSERT INTO PURCHASE
-       ( USER_id , BOOK_ISBN, No_of_copies, date_of_purchase)
+       ( USER_id , BOOK_ISBN, No_of_copies, date_of_purchase,price)
         VALUES ( #{params[:purchase][:User_id]},
         \"#{params[:purchase][:BOOK_ISBN]}\", #{params[:purchase][:No_of_copies].to_i}
-          , curdate() )"
+          , curdate() , 1)"
         ActiveRecord::Base.connection.execute(sql)
         @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE")
         format.html { redirect_to purchases_url, notice: 'Purchase was successfully created.' }

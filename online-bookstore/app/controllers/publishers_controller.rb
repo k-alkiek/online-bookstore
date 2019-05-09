@@ -70,12 +70,22 @@ class PublishersController < ApplicationController
   # DELETE /publishers/1
   # DELETE /publishers/1.json
   def destroy
-    sql = "Delete FROM PUBLISHER Where Name = \"#{params[:id]}\""
-    ActiveRecord::Base.connection.execute(sql)
-    respond_to do |format|
-      format.html { redirect_to publishers_url, notice: 'Publisher was successfully destroyed.' }
-      format.json { head :no_content }
+    begin
+      sql = "Delete FROM PUBLISHER Where Name = '#{params[:id]}'"
+      ActiveRecord::Base.connection.execute(sql)
+      @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER").paginate(:page => params[:page] || 1,:per_page => 20)
+      respond_to do |format|
+        format.html { redirect_to publishers_url, notice: 'Publisher was successfully destroyed.'}
+        format.json { head :no_content }
+      end
+    rescue
+      @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER").paginate(:page => params[:page] || 1,:per_page => 20)
+      respond_to do |format|
+        format.html { redirect_to publishers_url, notice: 'Publisher was\'t destroyed.' }
+        format.json { head :no_content }
+      end
     end
+
   end
 
   private

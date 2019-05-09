@@ -89,12 +89,24 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    sql = "Delete FROM User Where id = #{params[:id].to_i}"
-    ActiveRecord::Base.connection.execute(sql)
-    respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
-      format.json { head :no_content }
+    begin
+      sql = "Delete FROM User Where id = #{params[:id].to_i}"
+      ActiveRecord::Base.connection.execute(sql)
+      @users = User.find_by_sql("SELECT * FROM User").paginate(:page => params[:page] || 1,:per_page => 50)
+      respond_to do |format|
+        format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
+        format.json { head :no_content }
+      end
+    rescue
+
+      @users = User.find_by_sql("SELECT * FROM User").paginate(:page => params[:page] || 1,:per_page => 50)
+      respond_to do |format|
+        format.html { redirect_to users_url, notice: 'User wasn\'t destroyed.' }
+        format.json { head :no_content }
+      end
+
     end
+
   end
 
 

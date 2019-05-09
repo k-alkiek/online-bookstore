@@ -50,11 +50,12 @@ class OrdersController < ApplicationController
   def update
     respond_to do |format|
       begin
+        # add estimated arrival date
+
         sql = "UPDATE `ORDER` SET
-        estimated_arrival_date = \"#{params[:user][:estimated_arrival_date]}\"
-        ,confirmed = \"#{params[:user][:confirmed]}\"
-        ,BOOK_ISBN = \"#{params[:user][:BOOK_ISBN]}\"
-        ,address = \"#{params[:user][:quantity]}\" where id = #{params[:id].to_i}"
+        BOOK_ISBN = \"#{params[:order][:BOOK_ISBN]}\"
+        ,quantity = #{params[:order][:quantity]}
+         where id = #{params[:id].to_i}"
         ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
         format.json { render :show, status: :ok, location: @order }

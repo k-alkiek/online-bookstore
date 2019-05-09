@@ -269,12 +269,19 @@ BEGIN
 
 
 
-    IF number_of_ordered_copies + NEW.Available_copies_count < New.Minimum_threshold then
-       CALL Make_order(New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
+
+    IF ( (number_of_ordered_copies is NULL AND  New.Available_copies_count < NEW.Minimum_threshold) OR
+    (NEW.Available_copies_count + number_of_ordered_copies < NEW.Minimum_threshold)) then
+      IF number_of_ordered_copies is NULL then
+        CALL Make_order(New.ISBN, (New.Minimum_threshold - NEW.Available_copies_count ) * 2);
+      else
+        CALL Make_order(New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
+      end if;
     END IF;
   END IF;
 
 END;
+
 
 
 # after deleting a confirmed order its amount is added to the current book copies

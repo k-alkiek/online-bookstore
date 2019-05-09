@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="71f10ac5-b2ac-4ff9-bbd1-932461124ef1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/controllers/purchases_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/purchases_controller.rb" afterDir="false" />
-    </list>
+    <list default="true" id="71f10ac5-b2ac-4ff9-bbd1-932461124ef1" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/.bundle/" />
     <ignored path="$PROJECT_DIR$/components/" />
     <ignored path="$PROJECT_DIR$/public/system/" />
@@ -429,18 +427,17 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="61868000" />
+    <option name="totallyTimeSpent" value="62408000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="71" y="26" width="1849" height="1054" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.27343318" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27343318" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4997227" visible="true" weight="0.32792208" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4997227" visible="true" weight="0.32792208" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39935064" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />

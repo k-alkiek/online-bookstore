@@ -2,6 +2,9 @@ class SessionsController < ApplicationController
   protect_from_forgery
 
   def new
+    if current_user
+      redirect_to user_url(current_user)
+    end
   end
 
 

@@ -9,7 +9,7 @@
       %th Last name
       %th Phone
       %th Address
-      %th Ismanager
+      %th Is Manager
       %th Date joined
       %th{:colspan => "5"} Actions
   %tbody
@@ -31,9 +31,10 @@
 
         %td= link_to 'Show', user
         - if logged_in? && current_user.isManager
-          %td= link_to 'Edit', edit_user_path(user)
           %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
 .text-center
   = will_paginate
+
+= link_to 'Register new user', new_user_path
 

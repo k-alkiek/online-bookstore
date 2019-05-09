@@ -8,6 +8,8 @@
 %p
   %strong Telephone:
   = @publisher.telephone
-= link_to 'Edit', edit_publisher_path(@publisher)
-|
+
+-if current_user.isManager
+  = link_to 'Edit', edit_publisher_path(@publisher)
+  |
 = link_to 'Back', publishers_path

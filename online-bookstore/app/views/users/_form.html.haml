@@ -12,7 +12,7 @@
     = form.text_field :email
   .field
     = form.label :password
-    = form.text_field :password
+    = form.text_field :password , :value =>""
   .field
     = form.label :first_name
     = form.text_field :first_name
@@ -25,11 +25,5 @@
   .field
     = form.label :address
     = form.text_field :address
-  .field
-    = form.label :isManager
-    = form.check_box :isManager
-  .field
-    = form.label :date_joined
-    = form.date_select :date_joined
   .actions
     = form.submit

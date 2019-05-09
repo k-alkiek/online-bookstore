@@ -47,13 +47,16 @@
         %td= book.title
         %td= book.category
         %td= book.selling_price
-        %td= book.Minimum_threshold
+        -if current_user.isManager
+          %td= book.Minimum_threshold
         %td= book.Available_copies_count
         %td= book.PUBLISHER_Name
         %td= book.publish_year
         %td= link_to 'Show', book
-        %td= link_to 'Edit', edit_book_path(book)
-        %td= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }
+
+        -if current_user.isManager
+          %td= link_to 'Edit', edit_book_path(book)
+          %td= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
 .text-center
   = will_paginate

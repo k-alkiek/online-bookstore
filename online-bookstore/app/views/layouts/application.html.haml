@@ -35,6 +35,8 @@
               - if current_user.isManager?
                 %li
                   = link_to 'Orders', orders_path
+                %li
+                  = link_to 'Users', users_path
               / %li.dropdown
               /   %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
               /     Dropdown
@@ -66,7 +68,7 @@
                   Shopping Cart
               %li.dropdown
                 %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                  My Account
+                  = "#{current_user.first_name} #{current_user.last_name}"
                   %span.caret
                 %ul.dropdown-menu{:role => "menu"}
                   %li

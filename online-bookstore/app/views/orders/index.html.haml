@@ -1,24 +1,40 @@
 %p#notice= notice
 %h1 Orders
-%table
+%table.table.table-bordered.table-hover
   %thead
     %tr
+      %th ID
       %th Date submitted
       %th Estimated arrival date
       %th Confirmed
       %th Book isbn
       %th Quantity
-      %th{:colspan => "3"}
+      - if logged_in? && current_user.isManager
+        %th{:colspan => "5"}
+      - else
+        %th{:colspan => "3"}
   %tbody
+    = link_to 'New Order', new_order_path, class: "btn btn-default pull-right"
+    .text-center
+      = will_paginate
     - @orders.each do |order|
       %tr
+        %td= order.id
         %td= order.date_submitted
         %td= order.estimated_arrival_date
         %td= order.confirmed
         %td= order.BOOK_ISBN
         %td= order.quantity
+
+
+        - if logged_in? && current_user.isManager
+          %td= link_to 'Confirm', orders_confirm_url(:id =>order.id)
+          %td= link_to 'UnConfirm', orders_unconfirm_url(:id =>order.id)
+
         %td= link_to 'Show', order
         %td= link_to 'Edit', edit_order_path(order)
         %td= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
-= link_to 'New Order', new_order_path
+.text-center
+  = will_paginate
+

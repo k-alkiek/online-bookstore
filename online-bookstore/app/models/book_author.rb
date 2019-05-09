@@ -1,4 +1,4 @@
 class BookAuthor < ApplicationRecord
 	self.table_name = "BOOK_AUTHOR"
-  belongs_to :AUTHOR
+	belongs_to :book
 end

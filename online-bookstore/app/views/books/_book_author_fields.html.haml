@@ -1,8 +1,12 @@
 .nested-fields
-  .field
-    = form.label :Author
-    / %br
-    = form.collection_select :AUTHOR_id, @authors,:id,:Author_name, include_blank: false
+  .row
+    .col-sm-9
+      .field.form-group
+        = form.label :Author, class: "control-label col-sm-2"
+        / %br
+        .col-sm-10
+          = form.collection_select :AUTHOR_id, @authors,:id,:Author_name, {include_blank: false}, {class: "form-control"}
 
-    //# = form.text_field :AUTHOR_id
-  = link_to_remove_association "remove author", form
+        //# = form.text_field :AUTHOR_id
+    .col-sm-3
+      = link_to_remove_association "remove author", form, class: "btn btn-default pull-right"

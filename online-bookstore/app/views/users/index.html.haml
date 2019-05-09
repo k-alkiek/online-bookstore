@@ -1,6 +1,7 @@
 %p#notice= notice
 %h1 Users
-%table
+= link_to 'Register New User', new_user_path, class: "btn btn-default pull-right"
+%table.table.table-bordered.table-hover
   %thead
     %tr
       %th Email
@@ -10,9 +11,10 @@
       %th Address
       %th Is Manager
       %th Date joined
-      %th{:colspan => "3"}
+      %th{:colspan => "5"} Actions
   %tbody
-    = will_paginate
+    .text-center
+      = will_paginate
     - @users.each do |user|
       %tr
         %td= user.email
@@ -31,5 +33,7 @@
         - if logged_in? && current_user.isManager
           %td= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
-= will_paginate
-= link_to 'Register new user', new_user_path
+.text-center
+  = will_paginate
+
+

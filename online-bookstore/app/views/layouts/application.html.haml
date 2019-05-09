@@ -7,21 +7,76 @@
     = csp_meta_tag
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    / Latest compiled and minified CSS
+
   %body
-    = form_tag books_path, :method => 'get' do
-      = text_field_tag :isbn, params[:isbn], placeholder: "ISBN"
-      = submit_tag  "Search" , :isbn => nil
+    %nav.navbar.navbar-default{:role => "navigation"}
+      - if current_user
+        .container-fluid
+          / Brand and toggle get grouped for better mobile display
+          .navbar-header
+            %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+              %span.sr-only Toggle navigation
+              %span.icon-bar
+              %span.icon-bar
+              %span.icon-bar
+            %a.navbar-brand{:href => "#"} Online Bookstore
+          / Collect the nav links, forms, and other content for toggling
+          #bs-example-navbar-collapse-1.collapse.navbar-collapse
+            %ul.nav.navbar-nav
+              / %li.active
+              /   %a{:href => "#"} Link
+              %li
+                = link_to 'Books', books_path
+              %li
+                = link_to 'Publishers', publishers_path
+              %li
+                = link_to 'Authors', authors_path
+              - if current_user.isManager?
+                %li
+                  = link_to 'Orders', orders_path
+              / %li.dropdown
+              /   %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+              /     Dropdown
+              /     %span.caret
+              /   %ul.dropdown-menu{:role => "menu"}
+              /     %li
+              /       %a{:href => "#"} Action
+              /     %li
+              /       %a{:href => "#"} Another action
+              /     %li
+              /       %a{:href => "#"} Something else here
+              /     %li.divider
+              /     %li
+              /       %a{:href => "#"} Separated link
+              /     %li.divider
+              /     %li
+              /       %a{:href => "#"} One more separated link
+            %form.navbar-form.navbar-left{:role => "search"}
+              = form_tag books_path, :method => 'get', :class => "form-group" do
+                = text_field_tag :isbn, params[:isbn], placeholder: "ISBN", class: "form-control"
+                = submit_tag  "Search" , :isbn => nil, class: "btn btn-default"
+            %ul.nav.navbar-nav.navbar-right
+              %li
+                = link_to 'Purchases', purchases_path
+              %li
+                = link_to "Shopping Cart" do #, cart_show_path
+                  = fa_icon "shopping-cart " 
+                  / %i.glyphicon.glyphicon-shopping-cart  
+                  Shopping Cart
+              %li.dropdown
+                %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                  My Account
+                  %span.caret
+                %ul.dropdown-menu{:role => "menu"}
+                  %li
+                    = link_to 'Update Info', edit_user_path(current_user)
+                  %li.divider
+                  %li
+                    = link_to 'Logout', logout_path, method: :delete
+        /   .navbar-collapse
+        / .container-fluid
     %br
-    = form_tag books_path, :method => 'get' do
-      = text_field_tag :name, params[:name], placeholder: "Title"
-      = text_field_tag :author, params[:author], placeholder: "Author"
-      = text_field_tag :publisher, params[:publisher], placeholder: "Publisher"
-      = select_tag :category, options_for_select(["Science", "Art", "Religion", "History", "Geography"]), include_blank: "Select Category"
-      %br
-      = number_field_tag :price_from, params[:price_from], placeholder: "Price Lower Range"
-      = number_field_tag :price_to, params[:price_to], placeholder: "Price Upper Range"
-      = number_field_tag :publish_date, params[:publish_date], placeholder: "Publish Year"
-      = submit_tag  "Search", :name => nil
 
-
-    = yield
+    .container.well.bg-white
+      = yield

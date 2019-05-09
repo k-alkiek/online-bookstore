@@ -69,11 +69,19 @@ class OrdersController < ApplicationController
   # DELETE /orders/1
   # DELETE /orders/1.json
   def destroy
-    sql = "Delete FROM `ORDER` Where id = #{params[:id].to_i}"
-    ActiveRecord::Base.connection.execute(sql)
+
     respond_to do |format|
-      format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
-      format.json { head :no_content }
+      begin
+        sql = "Delete FROM `ORDER` Where id = #{params[:id].to_i}"
+        ActiveRecord::Base.connection.execute(sql)
+        @orders = Order.find_by_sql("SELECT * FROM `ORDER`").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
+        format.json { head :no_content }
+      rescue
+        @orders = Order.find_by_sql("SELECT * FROM `ORDER`").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to orders_url, notice: 'Order wasn\'t destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 

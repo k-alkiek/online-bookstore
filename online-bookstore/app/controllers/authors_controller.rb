@@ -64,12 +64,20 @@ class AuthorsController < ApplicationController
 
   # DELETE /authors/1
   # DELETE /authors/1.json
+
   def destroy
-    sql = "Delete FROM AUTHOR Where id = #{params[:id].to_i}"
-    ActiveRecord::Base.connection.execute(sql)
     respond_to do |format|
-      format.html { redirect_to authors_url, notice: 'Author was successfully destroyed.' }
-      format.json { head :no_content }
+      begin
+        sql = "Delete FROM AUTHOR Where id = #{params[:id].to_i}"
+        ActiveRecord::Base.connection.execute(sql)
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to authors_url, notice: 'Author was successfully destroyed.' }
+        format.json { head :no_content }
+      rescue
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to authors_url, notice: 'Author wasn\'t destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 

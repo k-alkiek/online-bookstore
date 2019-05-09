@@ -8,14 +8,7 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
-    add_filters
-    @books = if params[:isbn].nil?
-      Book.search(params[:name], @filters)
-    else
-      Book.isbn_search(params[:isbn])
-             end
-    @books = @books.paginate(:page => params[:page] || 1,:per_page => 50)
-    @filters = nil
+    set_books
   end
 
   # GET /books/1
@@ -97,12 +90,18 @@ class BooksController < ApplicationController
   # DELETE /books/1
   # DELETE /books/1.json
   def destroy
-    sql = "Delete FROM BOOK Where ISBN = \"#{params[:id]}\""
-    ActiveRecord::Base.connection.execute(sql)
-
     respond_to do |format|
-      format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
-      format.json { head :no_content }
+      begin
+        sql = "Delete FROM BOOK Where ISBN = \"#{params[:id]}\""
+        ActiveRecord::Base.connection.execute(sql)
+        set_books
+        format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
+        format.json { head :no_content }
+      rescue
+        set_books
+        format.html { redirect_to books_url, notice: 'Book was\'t destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 
@@ -161,6 +160,17 @@ class BooksController < ApplicationController
       @filters.push(" selling_price <= #{params[:price_to]}")
     end
 
+  end
+
+  def set_books
+    add_filters
+    @books = if params[:isbn].nil?
+               Book.search(params[:name], @filters)
+             else
+               Book.isbn_search(params[:isbn])
+             end
+    @books = @books.paginate(:page => params[:page] || 1,:per_page => 50)
+    @filters = nil
   end
 
 end

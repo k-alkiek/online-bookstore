@@ -29,6 +29,7 @@ class UsersController < ApplicationController
 
   def create
 
+    @user = User.new(user_params)
     respond_to do |format|
       begin
 
@@ -64,10 +65,15 @@ class UsersController < ApplicationController
         email = \"#{params[:user][:email]}\"
         ,first_name = \"#{params[:user][:first_name]}\"
         ,last_name = \"#{params[:user][:last_name]}\"
-        ,password = \"#{BCrypt::Password.create(params[:user][:password])}\"
         ,phone =\"#{params[:user][:phone]}\"
         ,address = \"#{params[:user][:address]}\" where id = #{params[:id].to_i}"
         ActiveRecord::Base.connection.execute(sql)
+
+        if params[:user][:password].present?
+          sql = "UPDATE User SET password = \"#{BCrypt::Password.create(params[:user][:password])}\" where id = #{params[:id].to_i}"
+          ActiveRecord::Base.connection.execute(sql)
+        end
+
         format.html { redirect_to @user, notice: 'User was successfully updated.'}
         format.json { render :show, status: :ok, location: @user }
       rescue
@@ -100,8 +106,11 @@ class UsersController < ApplicationController
 
 
   def demote
-    sql = "UPDATE  User SET isManager = false Where id = #{params[:id].to_i}"
-    ActiveRecord::Base.connection.execute(sql)
+
+    unless params[:id].to_i == 1
+      sql = "UPDATE  User SET isManager = false Where id = #{params[:id].to_i}"
+      ActiveRecord::Base.connection.execute(sql)
+    end
     redirect_to users_url
   end
 

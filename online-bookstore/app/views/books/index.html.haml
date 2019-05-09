@@ -13,6 +13,20 @@
       %th Publish year
       %th{:colspan => "3"}
   %tbody
+    = form_tag books_path, :method => 'get' do
+      = text_field_tag :isbn, params[:isbn], placeholder: "ISBN"
+      = submit_tag  "Search" , :isbn => nil
+    %br
+    = form_tag books_path, :method => 'get' do
+      = text_field_tag :name, params[:name], placeholder: "Title"
+      = text_field_tag :author, params[:author], placeholder: "Author"
+      = text_field_tag :publisher, params[:publisher], placeholder: "Publisher"
+      = select_tag :category, options_for_select(["Science", "Art", "Religion", "History", "Geography"]), include_blank: "Select Category"
+      %br
+      = number_field_tag :price_from, params[:price_from], placeholder: "Price Lower Range"
+      = number_field_tag :price_to, params[:price_to], placeholder: "Price Upper Range"
+      = number_field_tag :publish_date, params[:publish_date], placeholder: "Publish Year"
+      = submit_tag  "Search", :name => nil
 
     = will_paginate
     - @books.each do |book|
@@ -21,13 +35,16 @@
         %td= book.title
         %td= book.category
         %td= book.selling_price
-        %td= book.Minimum_threshold
+        -if current_user.isManager
+          %td= book.Minimum_threshold
         %td= book.Available_copies_count
         %td= book.PUBLISHER_Name
         %td= book.publish_year
         %td= link_to 'Show', book
-        %td= link_to 'Edit', edit_book_path(book)
-        %td= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }
+
+        -if current_user.isManager
+          %td= link_to 'Edit', edit_book_path(book)
+          %td= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
 = will_paginate
 = link_to 'New Book', new_book_path

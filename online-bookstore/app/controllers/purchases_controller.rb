@@ -52,10 +52,9 @@ class PurchasesController < ApplicationController
       begin
         sql = "UPDATE PURCHASE SET
         No_of_copies = #{params[:purchase][:No_of_copies]}
-        ,date_of_purchase = \"#{params[:purchase][:date_of_purchase]}\"
          where id = #{params[:id].to_i}"
         ActiveRecord::Base.connection.execute(sql)
-        format.html { redirect_to @purchase, notice: 'Purchase was successfully updated.' }
+        format.html { redirect_to @purchase, notice: 'Purchase was successfully updated.'}
         format.json { render :show, status: :ok, location: @purchase }
       rescue
         format.html { render :edit }

@@ -136,13 +136,13 @@ class BooksController < ApplicationController
             end
 
     if params[:author].present?
-      authors_ids = ActiveRecord::Base.connection.execute("SELECT id FROM AUTHOR where Author_name = \"#{params[:author]}\"").map {|e| e = e[0]}
+      authors_ids = ActiveRecord::Base.connection.execute("SELECT id FROM AUTHOR where lower(Author_name) like \"%#{params[:author].to_s.downcase}%\"").map {|e| e = e[0]}
       books_isbn = ActiveRecord::Base.connection.execute("SELECT Distinct BOOK_ISBN FROM BOOK_AUTHOR WHERE AUTHOR_id IN (#{authors_ids.join(", ")})").map {|e| e = e[0]}
       @filters.push(" ISBN IN (\"#{books_isbn.join("\", \"")}\")")
     end
 
     if params[:publisher].present?
-      @filters.push(" PUBLISHER_Name ='#{params[:publisher]}'")
+      @filters.push(" lower(PUBLISHER_Name) like \"%'#{params[:publisher].to_s.downcase}'%\"")
     end
 
     if params[:category].present?

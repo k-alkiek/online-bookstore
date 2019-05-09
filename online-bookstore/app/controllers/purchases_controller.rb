@@ -60,10 +60,29 @@ class PurchasesController < ApplicationController
       format.json { head :no_content }
     end
   end
-
-  public 
+ 
   def checkout
-    binding.pry
+  end
+
+  def confirm_checkout
+    puts @number
+    puts @date
+    cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
+    book_quantity = cookies[:quantity_ordered] ? cookies[:quantity_ordered].split(",") : []
+    query = ""
+    @error = false;
+    cart_books.zip(book_quantity).each do |book, quantity|
+      query << "update BOOK set Available_copies_count = Available_copies_count - #{quantity} where ISBN = \\\"#{book}\\\";\n"
+    end
+    result = call_procedure(query)
+    if !(result == 'Purchase completed successfully.')
+      flash[:danger] = result
+    else
+      flash[:notice] = result
+      cookies.delete(:books_in_cart)
+      cookies.delete(:quantity_ordered)
+    end
+    render "checkout"
   end
 
   private
@@ -75,5 +94,10 @@ class PurchasesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_params
       params.require(:purchase).permit(:User_id, :BOOK_ISBN, :No_of_copies, :price, :date_of_purchase)
+    end
+
+    def call_procedure(query)
+      result = ActiveRecord::Base.connection.execute("call make_purchase(\"#{query}\");")
+      return result.first.first
     end
 end

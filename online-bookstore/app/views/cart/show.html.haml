@@ -29,7 +29,7 @@
 %p= 'total number of books:' 
 %p #{@result.count}
 
-= form_with url:checkout_purchases_path do |form|
- = form.label :Total_Price
- = form.text_field :total_price, value: (total_price).to_s + "L.E", readonly: true
- = form.submit 'Check out'
+%p= 'Total price:' 
+%p #{total_price}
+= link_to_if(@result.count > 0, 'Check out', controller: "purchases", action: "checkout")
+%br/

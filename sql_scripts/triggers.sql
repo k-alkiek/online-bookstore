@@ -80,7 +80,7 @@ CREATE TRIGGER publisher_create_sanity_check
 BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -89,10 +89,10 @@ END;
 
 # prevent update malformed publisher
 CREATE TRIGGER publisher_update_sanity_check
-BEFORE INSERT ON PUBLISHER
+BEFORE UPDATE ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;

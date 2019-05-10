@@ -83,9 +83,9 @@ class PurchasesController < ApplicationController
     end
     result = call_procedure(query)
     if !(result == 'Purchase completed successfully.')
-      flash[:danger] = result
+      flash.now[:danger] = result
     else
-      flash[:notice] = result
+      flash.now[:notice] = result
       cookies.delete(:books_in_cart)
       cookies.delete(:quantity_ordered)
     end

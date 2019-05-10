@@ -37,7 +37,8 @@ class AuthorsController < ApplicationController
         @authors = Author.find_by_sql("SELECT * FROM AUTHOR")
         format.html { redirect_to authors_path, notice: 'Author was successfully created.' }
         format.json { render :show, status: :created, location: @author }
-      rescue
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :new }
         format.json { render json: @author.errors, status: :unprocessable_entity }
       end
@@ -56,8 +57,8 @@ class AuthorsController < ApplicationController
         @authors = Author.find_by_sql("SELECT * FROM AUTHOR")
         format.html { redirect_to authors_path, notice: 'Author was successfully updated.' }
         format.json { render :show, status: :created, location: @author }
-      rescue
-
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :edit }
         format.json { render json: @author.errors, status: :unprocessable_entity }
       end

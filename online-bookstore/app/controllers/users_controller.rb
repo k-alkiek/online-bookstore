@@ -48,8 +48,8 @@ class UsersController < ApplicationController
         @user = User.find_by_sql("SELECT * FROM User where email = \"#{@user[:email]}\"")
         format.html { redirect_to sessions_new_path, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
-      rescue
-
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :new }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
@@ -78,8 +78,8 @@ class UsersController < ApplicationController
 
         format.html { redirect_to @user, notice: 'User was successfully updated.'}
         format.json { render :show, status: :ok, location: @user }
-      rescue
-
+      rescue => error
+        flash.now[:alert] = error.message
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end

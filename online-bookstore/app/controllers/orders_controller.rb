@@ -41,7 +41,8 @@ class OrdersController < ApplicationController
         format.html { redirect_to orders_url, notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
       rescue
-        format.html { render :new }
+        flash.now[:alert] = 'The ISBN you chose doesn\'t exist'
+        format.html { render :new}
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
@@ -61,7 +62,12 @@ class OrdersController < ApplicationController
         ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
         format.json { render :show, status: :ok, location: @order }
-      rescue
+      rescue => error
+        if error.message.include? "foreign"
+          flash.now[:alert] = 'The ISBN you chose doesn\'t exist'
+        else
+          flash.now[:alert] =  error.message
+        end
         format.html { render :edit }
         format.json { render json: @order.errors, status: :unprocessable_entity }
 

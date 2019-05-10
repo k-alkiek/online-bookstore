@@ -72,25 +72,29 @@ class PurchasesController < ApplicationController
   end
 
   def confirm_checkout
-    p = ActiveRecord::Base.establish_connection
-    c = p.connection
-    result = []
+    # p = ActiveRecord::Base.establish_connection
+    # c = p.connection
+    # prices = []
     cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
-    cart_books = cart_books.map{|e| "\"#{e}\"" }
-    str = cart_books.join(",")
-    if !str.empty?
-    result = c.execute("select selling_price from BOOK where ISBN IN (#{str})")
-    end
+    cart_books_set = cart_books.map{|e| "\"#{e}\"" }
+    str = cart_books_set.join(",")
+    # if !str.empty?
+    #   prices = c.execute("select selling_price from BOOK where ISBN IN (#{str})")
+    #   prices = prices.to_a.flatten
+    # end
     book_quantity = cookies[:quantity_ordered] ? cookies[:quantity_ordered].split(",") : []
     query = ""
     @error = false;
-    cart_books.zip(book_quantity).each do |book, quantity|
-      query << "update BOOK set Available_copies_count = Available_copies_count - #{quantity} where ISBN = \\\"#{book}\\\";\n"
+    # book_quantity_int = book_quantity.map{|s| s.to_i} 
+    i = 0
+    n = cart_books.length
+    current_date = Time.now.strftime("%Y-%m-%d")
+    while i < n
+      query << "update BOOK set Available_copies_count = Available_copies_count - #{book_quantity[i]} where ISBN = \\\"#{cart_books[i]}\\\";\n"
+      query << "insert into PURCHASE(User_id, BOOK_ISBN, No_of_copies, date_of_purchase) values (#{current_user.id}, \\\"#{cart_books[i]}\\\", #{book_quantity[i]}, \\\"#{current_date}\\\");\n"
+      i += 1
     end
-    binding.pry
-    a.zip(b).map{|x, y| x * y}
-          query << "insert into PURCHASE values (#{user.id}, \\\"#{book}\\\", #{quantity}, , curDate());\\\n"
-
+    puts query
     result = call_procedure(query)
     if !(result == 'Purchase completed successfully.')
       flash[:danger] = result

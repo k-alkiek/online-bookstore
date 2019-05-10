@@ -12,9 +12,9 @@ categories = ["Science", "Art", "Religion", "History", "Geography"]
 
 puts "***** Creating Users *****"
 admin = User.find_or_create_by(email: 'admin@store.com', password: BCrypt::Password.create('12345678'), first_name: 'admin', last_name: 'admin', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: true, date_joined: Date.today)
-user1 = User.find_or_create_by(email: 'user1@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user1', last_name: 'user1', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
-user2 = User.find_or_create_by(email: 'user2@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user2', last_name: 'user2', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
-user3 = User.find_or_create_by(email: 'user3@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user3', last_name: 'user3', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
+user1 = User.find_or_create_by(email: 'user1@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user', last_name: 'one', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
+user2 = User.find_or_create_by(email: 'user2@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user', last_name: 'two', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
+user3 = User.find_or_create_by(email: 'user3@store.com', password: BCrypt::Password.create('12345678'), first_name: 'user', last_name: 'three', phone: Faker::PhoneNumber.phone_number, address: Faker::Address.street_address, isManager: false, date_joined: Date.today)
 
 puts "***** Creating Authors *****"
 authors = 50.times.to_a

@@ -1,10 +1,17 @@
 class PurchasesController < ApplicationController
-  before_action :set_purchase, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  
+  before_action :set_purchase, only: [:show]
+  before_action :check_logged_in
 
   # GET /purchases
   # GET /purchases.json
   def index
-    @purchases = Purchase.all
+    if current_user.isManager
+      @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE").paginate(:page => params[:page] || 1,:per_page => 50)
+    else
+      @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE Where User_id = #{current_user.id.to_i} ").paginate(:page => params[:page] || 1,:per_page => 50)
+    end
   end
 
   # GET /purchases/1
@@ -88,7 +95,7 @@ class PurchasesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase
-      @purchase = Purchase.find(params[:id])
+      @purchase = Purchase.find_by_sql("SELECT * FROM PURCHASE WHERE id = #{params[:id].to_i}")[0]
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -2,6 +2,9 @@ class SessionsController < ApplicationController
   protect_from_forgery
 
   def new
+    if current_user
+      redirect_to user_url(current_user)
+    end
   end
 
 
@@ -20,7 +23,7 @@ class SessionsController < ApplicationController
 
   def destroy
     log_out
-    redirect_to users
+    redirect_to root_path
   end
 
 end

@@ -1,11 +1,13 @@
 class AuthorsController < ApplicationController
+  load_and_authorize_resource
+  
   before_action :set_author, only: [:show, :edit, :update, :destroy]
-  before_action :check_logged_in, only: [:create, :new, :update, :destroy]
+  before_action :check_logged_in
 
   # GET /authors
   # GET /authors.json
   def index
-    @authors = Author.all
+    @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
   end
 
   # GET /authors/1
@@ -26,12 +28,16 @@ class AuthorsController < ApplicationController
   # POST /authors.json
   def create
     @author = Author.new(author_params)
-
     respond_to do |format|
-      if @author.save
-        format.html { redirect_to @author, notice: 'Author was successfully created.' }
+      begin
+        sql = "INSERT INTO AUTHOR
+         ( Author_name )
+          VALUES (\"#{params[:author][:Author_name]}\")"
+        ActiveRecord::Base.connection.execute(sql)
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR")
+        format.html { redirect_to authors_path, notice: 'Author was successfully created.' }
         format.json { render :show, status: :created, location: @author }
-      else
+      rescue
         format.html { render :new }
         format.json { render json: @author.errors, status: :unprocessable_entity }
       end
@@ -42,10 +48,16 @@ class AuthorsController < ApplicationController
   # PATCH/PUT /authors/1.json
   def update
     respond_to do |format|
-      if @author.update(author_params)
-        format.html { redirect_to @author, notice: 'Author was successfully updated.' }
-        format.json { render :show, status: :ok, location: @author }
-      else
+
+      begin
+        sql = "UPDATE AUTHOR SET
+         Author_name = (\"#{params[:author][:Author_name]}\")"
+        ActiveRecord::Base.connection.execute(sql)
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR")
+        format.html { redirect_to authors_path, notice: 'Author was successfully updated.' }
+        format.json { render :show, status: :created, location: @author }
+      rescue
+
         format.html { render :edit }
         format.json { render json: @author.errors, status: :unprocessable_entity }
       end
@@ -54,18 +66,29 @@ class AuthorsController < ApplicationController
 
   # DELETE /authors/1
   # DELETE /authors/1.json
+
   def destroy
-    @author.destroy
     respond_to do |format|
-      format.html { redirect_to authors_url, notice: 'Author was successfully destroyed.' }
-      format.json { head :no_content }
+      begin
+        sql = "Delete FROM AUTHOR Where id = #{params[:id].to_i}"
+        ActiveRecord::Base.connection.execute(sql)
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to authors_url, notice: 'Author was successfully destroyed.' }
+        format.json { head :no_content }
+      rescue
+        @authors = Author.find_by_sql("SELECT * FROM AUTHOR").paginate(:page => params[:page] || 1,:per_page => 20)
+        format.html { redirect_to authors_url, notice: 'Author wasn\'t destroyed.' }
+        format.json { head :no_content }
+      end
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_author
-      @author = Author.find(params[:id])
+      @author = Author.find_by_sql("SELECT * FROM
+                AUTHOR WHERE id =
+                 #{params[:id].to_i}")[0]
     end
 
 

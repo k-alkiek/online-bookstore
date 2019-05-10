@@ -1,4 +1,4 @@
-= form_with(model: book, local: true) do |form|
+= form_with(model: book, local: true, class: "form-horizontal") do |form|
   - if book.errors.any?
     #error_explanation
       %h2
@@ -7,32 +7,46 @@
       %ul
         - book.errors.full_messages.each do |message|
           %li= message
-  .field
-    = form.label :ISBN
-    = form.text_field :ISBN
-  .field
-    = form.label :title
-    = form.text_field :title
-  .field
-    = form.label :category
-    = form.text_field :category
-  .field
-    = form.label :selling_price
-    = form.text_field :selling_price
-  .field
-    = form.label :Minimum_threshold
-    = form.number_field :Minimum_threshold
-  .field
-    = form.label :Available_copies_count
-    = form.number_field :Available_copies_count
-  .field
-    = form.label :PUBLISHER_Name
-    = form.collection_select :PUBLISHER_Name, @publishers,:Name,:Name, include_blank: false
-  / .field
-  /   = form.label :PUBLISHER_Name
-  /   = form.text_field :PUBLISHER_Name
-  .field
-    = form.label :publish_year
-    = form.date_select :publish_year
+  .form-group
+    = form.label :ISBN, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.text_field :ISBN, class: "form-control"
+  .form-group
+    = form.label :title, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.text_field :title, class: "form-control"
+  .form-group
+    = form.label :category, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.text_field :category, class: "form-control"
+  .form-group
+    = form.label :selling_price, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.text_field :selling_price, class: "form-control"
+  .form-group
+    = form.label :Minimum_threshold, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.number_field :Minimum_threshold, class: "form-control"
+  .form-group
+    = form.label :Available_copies_count, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.number_field :Available_copies_count, class: "form-control"
+  .form-group
+    = form.label :PUBLISHER_Name, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.collection_select :PUBLISHER_Name, @publishers,:Name,:Name, {include_blank: false}, {class: "form-control"}
+  .form-group
+    = form.label :publish_year, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.date_select :publish_year, {}, {class: "form-control datepicker"}
+
+  .container-fluid
+    %h4 Authors
+    #book-authors
+      = form.fields_for :book_authors do |book_author|
+        = render 'book_author_fields', form: book_author
+      .links.control-label
+        = link_to_add_association 'add author', form, :book_authors, form_name: :form, class: "btn btn-default pull-right"
   .actions
-    = form.submit
+    %br
+    = form.submit class: "btn btn-default col-sm-2 pull-right"

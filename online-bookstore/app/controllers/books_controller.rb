@@ -48,7 +48,8 @@ class BooksController < ApplicationController
 
         format.html { redirect_to books_url, notice: 'Book was successfully created.'}
         format.json { render :show, status: :created, location: books_path }
-      rescue
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :new }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end
@@ -81,8 +82,8 @@ class BooksController < ApplicationController
 
         format.html { redirect_to @book, notice: 'Book was successfully updated.' }
         format.json { render :show, status: :ok, location: @book }
-      rescue
-
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :edit }
         format.json { render json: @book.errors, status: :unprocessable_entity }
       end

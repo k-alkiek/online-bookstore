@@ -1,0 +1,17 @@
+%h1 Top Customers
+%p Top 5 with most buyings in the last three months
+
+%table.table.table-bordered.table-hover
+  %thead
+    %tr
+      %th id
+      %th First Name
+      %th Last Name
+      %th Buyings
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td= user[0]
+        %td= user[1]
+        %td= user[2]
+        %td= user[3]

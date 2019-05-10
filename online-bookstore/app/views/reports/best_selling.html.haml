@@ -1,0 +1,15 @@
+%h1 Best Selling
+%p Best 10 selling books in the last 3 months
+
+%table.table.table-bordered.table-hover
+  %thead
+    %tr
+      %th ISBN
+      %th Title
+      %th Sales
+  %tbody
+    - @books.each do |book|
+      %tr
+        %td= book[0]
+        %td= book[1]
+        %td= book[2]

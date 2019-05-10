@@ -26,46 +26,42 @@
             %ul.nav.navbar-nav
               / %li.active
               /   %a{:href => "#"} Link
-              %li
+              %li{class: controller_name == "books"? "active":""}
                 = link_to 'Books', books_path
-              %li
+              %li{class: controller_name == "publishers"? "active":""}
                 = link_to 'Publishers', publishers_path
-              %li
+              %li{class: controller_name == "authors"? "active":""}
                 = link_to 'Authors', authors_path
               - if current_user.isManager?
-                %li
+                %li{class: controller_name == "orders"? "active":""}
                   = link_to 'Orders', orders_path
-                %li
+                %li{class: controller_name == "users"? "active":""}
                   = link_to 'Users', users_path
-              / %li.dropdown
-              /   %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-              /     Dropdown
-              /     %span.caret
-              /   %ul.dropdown-menu{:role => "menu"}
-              /     %li
-              /       %a{:href => "#"} Action
-              /     %li
-              /       %a{:href => "#"} Another action
-              /     %li
-              /       %a{:href => "#"} Something else here
-              /     %li.divider
-              /     %li
-              /       %a{:href => "#"} Separated link
-              /     %li.divider
-              /     %li
-              /       %a{:href => "#"} One more separated link
+                %li.dropdown{class: controller_name == "reports"? "active":""}
+                  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+                    = fa_icon "line-chart"
+                    Reports
+                    %span.caret
+                  %ul.dropdown-menu{:role => "menu"}
+                    %li
+                      = link_to "Sales", reports_sales_path
+                    %li
+                      = link_to "Top Customers", reports_top_customers_path
+                    %li
+                      = link_to "Best Selling", reports_best_selling_path
             %form.navbar-form.navbar-left{:role => "search"}
               = form_tag books_path, :method => 'get', :class => "form-group" do
                 = text_field_tag :isbn, params[:isbn], placeholder: "ISBN", class: "form-control"
                 = submit_tag  "Search" , :isbn => nil, class: "btn btn-default"
             %ul.nav.navbar-nav.navbar-right
-              %li
-                = link_to 'Purchases', purchases_path
-              %li
-                = link_to "Shopping Cart" do #, cart_show_path
-                  = fa_icon "shopping-cart " 
-                  / %i.glyphicon.glyphicon-shopping-cart  
-                  Shopping Cart
+              %li{class: controller_name == "purchases"? "active":""}
+                = link_to purchases_path do
+                  = fa_icon "gbp"
+                  Purchases
+              %li{class: controller_name == "cart"? "active":""}
+                = link_to "cart_path" do #, cart_show_path 
+                  = fa_icon "shopping-cart"
+                  Cart
               %li.dropdown
                 %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
                   = "#{current_user.first_name} #{current_user.last_name}"

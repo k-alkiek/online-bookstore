@@ -10,7 +10,7 @@
   .form-group
     = form.label :expiry_date, class: "control-label col-sm-2"
     .col-sm-10
-      = form.date_select :expiry_date, {discard_day: true}, {class: "form-control"}
+      = form.date_select :expiry_date, {discard_day: true, use_month_numbers: true, start_year: Date.today.year, end_year: Date.today.year + 15}, {class: "form-control", style: "float: left; width: 150px;"}
   .actions
     %br
     = form.submit "Confirm Order", class: "btn btn-default col-sm-2 pull-right"

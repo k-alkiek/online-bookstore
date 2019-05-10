@@ -18,7 +18,7 @@
   .form-group
     = form.label :category, class: "control-label col-sm-2"
     .col-sm-10
-      = form.text_field :category, class: "form-control"
+      = form.select :category, options_for_select(["Science", "Art", "Religion", "History", "Geography"]), {include_blank: "Select Category"}, class: "form-control"
   .form-group
     = form.label :selling_price, class: "control-label col-sm-2"
     .col-sm-10
@@ -38,7 +38,7 @@
   .form-group
     = form.label :publish_year, class: "control-label col-sm-2"
     .col-sm-10
-      = form.date_select :publish_year, {}, {class: "form-control datepicker"}
+      = form.date_select :publish_year, {start_year: Date.today.year, end_year: Date.today.year - 60}, {class: "form-control datepicker", style: "float: left; width: 150px;"}
 
   .container-fluid
     %h4 Authors

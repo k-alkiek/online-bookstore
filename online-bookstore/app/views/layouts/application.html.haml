@@ -8,6 +8,8 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
+    =flash[:notice]
+    =flash[:danger]
     = yield
     = link_to "Show Cart", cart_show_path
 

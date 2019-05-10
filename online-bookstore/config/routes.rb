@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :purchases do
     collection do
       get 'checkout'
-      post 'confirm_checkout'
+      get 'confirm_checkout'
     end
   end
   resources :publishers

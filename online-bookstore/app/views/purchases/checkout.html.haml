@@ -5,4 +5,4 @@
 %p
   %strong Expiry date:
   =date_field("credit_card", "expiry_date", min: Date.today, value: @date)
-= link_to_if(cookies[:books_in_cart] != [], "Confirm Order", action: "confirm_checkout", params: {credit_card_no: @number, expiry_date: @date})
+= link_to_if(cookies[:books_in_cart].split(",") != [], "Confirm Order", action: "confirm_checkout", params: {credit_card_no: @number, expiry_date: @date})

@@ -72,15 +72,25 @@ class PurchasesController < ApplicationController
   end
 
   def confirm_checkout
-    puts @number
-    puts @date
+    p = ActiveRecord::Base.establish_connection
+    c = p.connection
+    result = []
     cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart].split(",") : []
+    cart_books = cart_books.map{|e| "\"#{e}\"" }
+    str = cart_books.join(",")
+    if !str.empty?
+    result = c.execute("select selling_price from BOOK where ISBN IN (#{str})")
+    end
     book_quantity = cookies[:quantity_ordered] ? cookies[:quantity_ordered].split(",") : []
     query = ""
     @error = false;
     cart_books.zip(book_quantity).each do |book, quantity|
       query << "update BOOK set Available_copies_count = Available_copies_count - #{quantity} where ISBN = \\\"#{book}\\\";\n"
     end
+    binding.pry
+    a.zip(b).map{|x, y| x * y}
+          query << "insert into PURCHASE values (#{user.id}, \\\"#{book}\\\", #{quantity}, , curDate());\\\n"
+
     result = call_procedure(query)
     if !(result == 'Purchase completed successfully.')
       flash[:danger] = result

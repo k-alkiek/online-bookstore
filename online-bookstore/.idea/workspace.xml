@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="71f10ac5-b2ac-4ff9-bbd1-932461124ef1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/books_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/books_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/reports_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/reports_controller.rb" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.bundle/" />
     <ignored path="$PROJECT_DIR$/components/" />
@@ -18,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/online_bookstore@Development__online_bookstore.rcov" NAME="Development: online-bookstore Coverage Results" MODIFIED="1557478299062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="online-bookstore" />
+    <SUITE FILE_PATH="coverage/online_bookstore@Development__online_bookstore.rcov" NAME="Development: online-bookstore Coverage Results" MODIFIED="1557479840395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="online-bookstore" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="1039275815">
@@ -59,7 +59,7 @@
           <entry key="erb" value="55" />
           <entry key="gitignore" value="7" />
           <entry key="haml" value="522" />
-          <entry key="rb" value="4825" />
+          <entry key="rb" value="4843" />
           <entry key="yml" value="8" />
         </counts>
       </usages-collector>
@@ -68,7 +68,7 @@
           <entry key="Haml" value="522" />
           <entry key="PLAIN_TEXT" value="7" />
           <entry key="RHTML" value="55" />
-          <entry key="Ruby" value="5122" />
+          <entry key="Ruby" value="5140" />
           <entry key="YAML" value="8" />
         </counts>
       </usages-collector>
@@ -79,7 +79,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/purchases_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="550">
+            <state relative-caret-position="704">
               <caret line="32" selection-start-line="32" selection-end-line="32" />
             </state>
           </provider>
@@ -94,18 +94,22 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/books_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="141" column="170" selection-start-line="141" selection-start-column="21" selection-end-line="141" selection-end-column="170" />
+            <state relative-caret-position="-114">
+              <caret line="145" column="55" selection-start-line="145" selection-start-column="55" selection-end-line="145" selection-end-column="55" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/reports_controller.rb">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="369">
+              <caret line="27" column="10" selection-start-line="27" selection-start-column="10" selection-end-line="27" selection-end-column="10" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -200,6 +204,7 @@
         <option value="$PROJECT_DIR$/app/controllers/purchases_controller.rb" />
         <option value="$PROJECT_DIR$/app/controllers/orders_controller.rb" />
         <option value="$PROJECT_DIR$/app/controllers/books_controller.rb" />
+        <option value="$PROJECT_DIR$/app/controllers/reports_controller.rb" />
       </list>
     </option>
   </component>
@@ -421,12 +426,12 @@
       <workItem from="1557405968144" duration="4177000" />
       <workItem from="1557433049809" duration="4679000" />
       <workItem from="1557441827488" duration="17000" />
-      <workItem from="1557476822117" duration="1289000" />
+      <workItem from="1557476822117" duration="2692000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="66124000" />
+    <option name="totallyTimeSpent" value="67527000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -446,8 +451,8 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4997227" visible="true" weight="0.32792208" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39935064" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4997227" weight="0.32792208" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.39935064" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32900432" />
@@ -551,6 +556,11 @@
           <url>file://$PROJECT_DIR$/app/controllers/books_controller.rb</url>
           <line>140</line>
           <option name="timeStamp" value="39" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="ruby-line">
+          <url>file://$PROJECT_DIR$/app/controllers/reports_controller.rb</url>
+          <line>10</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -823,16 +833,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/reports_controller.rb">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/purchases_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="32" selection-start-line="32" selection-end-line="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/users_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="158">
@@ -842,8 +842,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/books_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="141" column="170" selection-start-line="141" selection-start-column="21" selection-end-line="141" selection-end-column="170" />
+        <state relative-caret-position="-114">
+          <caret line="145" column="55" selection-start-line="145" selection-start-column="55" selection-end-line="145" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/purchases_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/reports_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="27" column="10" selection-start-line="27" selection-start-column="10" selection-end-line="27" selection-end-column="10" />
         </state>
       </provider>
     </entry>

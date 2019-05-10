@@ -4,9 +4,9 @@ class ReportsController < ApplicationController
 	# Sales for last month
   def sales
   	@sales = 0
-  	sql = "SELECT SUM(price) as sales FROM PURCHASE
-					WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
-					AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);"
+  	sql = "SELECT SUM(price)
+				as sales FROM PURCHASE where
+				TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 1;"
 		result = ActiveRecord::Base.connection.execute(sql)
 		@sales = result.first.first if result.first.first.present?
   end
@@ -15,8 +15,7 @@ class ReportsController < ApplicationController
   def top_customers
   	sql = "SELECT User.id, first_name,last_name, SUM(price) as buyings FROM
 	        PURCHASE inner join `User` on User.id = User_id
-					WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-					AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+					where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 					GROUP BY User.id ORDER BY buyings DESC LIMIT 5;"
 		@users = ActiveRecord::Base.connection.execute(sql)
   end
@@ -25,8 +24,7 @@ class ReportsController < ApplicationController
   def best_selling
   	sql = "SELECT ISBN, title, SUM(price) as sales FROM
 	        PURCHASE inner join BOOK on ISBN = BOOK_ISBN
-					WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-					AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+					where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 					GROUP BY BOOK_ISBN ORDER BY sales DESC LIMIT 10;"
 		@books = ActiveRecord::Base.connection.execute(sql)
   end

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get 'reports/sales'
   get 'reports/top_customers'
   get 'reports/best_selling'
-  root 'sessions#new'
+  root 'books#index'
   get 'sessions/new'
   get 'orders/confirm'
   get 'users/promote'

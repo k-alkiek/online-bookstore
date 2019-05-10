@@ -6,6 +6,7 @@
       = f.email_field :email, class: 'form-control'
       = f.label :password
       = f.password_field :password, class: 'form-control'
-      = f.submit "Log in", class: "btn btn-primary"
+      %br
+      = f.submit "Log in", class: "btn btn-primary pull-right"
+      = link_to 'Register', new_user_url, class: "btn btn-default"
 .row
-  = link_to 'Register', new_user_url

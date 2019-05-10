@@ -11,17 +11,18 @@
 
   %body
     %nav.navbar.navbar-default{:role => "navigation"}
-      - if current_user
-        .container-fluid
-          / Brand and toggle get grouped for better mobile display
-          .navbar-header
-            %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
-              %span.sr-only Toggle navigation
-              %span.icon-bar
-              %span.icon-bar
-              %span.icon-bar
-            %a.navbar-brand{:href => "#"} Online Bookstore
-          / Collect the nav links, forms, and other content for toggling
+      .container-fluid
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          / %a.navbar-brand{:href => "#"} Online Bookstore
+          = link_to "Online Bookstore", root_path, class: "navbar-brand"
+        / Collect the nav links, forms, and other content for toggling
+        - if current_user
           #bs-example-navbar-collapse-1.collapse.navbar-collapse
             %ul.nav.navbar-nav
               / %li.active

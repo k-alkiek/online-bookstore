@@ -1,7 +1,8 @@
 %h1 Confirm purchase
 = form_with(url: confirm_checkout_purchases_path, class: "form-horizontal", local: true) do |form|
   - if flash[:error]
-    = flash[:error]
+    .alert.alert-danger
+      = flash[:error]
   .form-group
     = form.label :credit_card_number, class: "control-label col-sm-2"
     .col-sm-10

@@ -72,6 +72,13 @@ class PurchasesController < ApplicationController
   end
 
   def confirm_checkout
+    detector = CreditCardValidations::Detector.new(params[:credit_card_no])
+    unless detector.valid?
+      flash[:error] = 'Invalid credit card credentials'
+      redirect_to checkout_purchases_path
+      return
+    end
+
     cart_books = cookies[:books_in_cart] ? cookies[:books_in_cart] : ""
     book_quantity = cookies[:quantity_ordered] ? cookies[:quantity_ordered] : ""
     @error = false;
@@ -82,7 +89,7 @@ class PurchasesController < ApplicationController
     else
       cookies.delete(:books_in_cart)
       cookies.delete(:quantity_ordered)
-      redirect_to books_path, notice: result
+      redirect_to books_path, notice: "#{result}\nCredit card vendor: #{detector.brand}"
     end
   end
 
@@ -98,7 +105,6 @@ class PurchasesController < ApplicationController
     end
 
     def call_procedure(isbn_list, quantity_list, user_id)
-      binding.pry
       result = ActiveRecord::Base.connection.execute("call insert_purchases(\"#{isbn_list}\", \"#{quantity_list}\", #{user_id});")
       return result.first.first
     end

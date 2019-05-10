@@ -82,6 +82,9 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
+    credit_card_validations (3.5.0)
+      activemodel (>= 3, <= 6)
+      activesupport (>= 3, <= 6)
     erubi (1.8.0)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -248,6 +251,7 @@ DEPENDENCIES
   chromedriver-helper
   cocoon
   coffee-rails (~> 4.2)
+  credit_card_validations
   faker
   font-awesome-rails
   haml

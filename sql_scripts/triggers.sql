@@ -267,7 +267,7 @@ CREATE TRIGGER author_create_sanity_check
 BEFORE INSERT ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[,]|[\'])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -278,7 +278,7 @@ CREATE TRIGGER author_update_sanity_check
 BEFORE UPDATE ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[,]|[\'])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -288,7 +288,7 @@ CREATE TRIGGER publisher_create_sanity_check
 BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[,]|[\'])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -297,10 +297,10 @@ END;
 
 # prevent update malformed publisher
 CREATE TRIGGER publisher_update_sanity_check
-BEFORE INSERT ON PUBLISHER
+BEFORE Update ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[-]|[,]|[\'])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;

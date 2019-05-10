@@ -28,6 +28,8 @@ DELIMITER ;
 
 
 
+
+
 DELIMITER //
 CREATE PROCEDURE update_order(
 IN ISBN varchar(17),
@@ -134,6 +136,7 @@ DELIMITER ;
 
 
 
+
 ###################################################################################################################
 
 # prevent malformed users
@@ -180,7 +183,7 @@ CREATE TRIGGER author_create_sanity_check
 BEFORE INSERT ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[\'])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -191,7 +194,7 @@ CREATE TRIGGER author_update_sanity_check
 BEFORE UPDATE ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[\'])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -201,7 +204,7 @@ CREATE TRIGGER publisher_create_sanity_check
 BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[-]|[,]|[\'])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -210,10 +213,10 @@ END;
 
 # prevent update malformed publisher
 CREATE TRIGGER publisher_update_sanity_check
-BEFORE UPDATE ON PUBLISHER
+BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[-]|[,]|[\'])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -394,9 +397,11 @@ BEGIN
     IF ( (number_of_ordered_copies is NULL AND  New.Available_copies_count < NEW.Minimum_threshold) OR
     (NEW.Available_copies_count + number_of_ordered_copies < NEW.Minimum_threshold)) then
       IF number_of_ordered_copies is NULL then
-        CALL Make_order(New.ISBN, (New.Minimum_threshold - NEW.Available_copies_count ) * 2);
+          INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
+          VALUES ( curdate(), NULL, FALSE, NEW.ISBN, (New.Minimum_threshold - NEW.Available_copies_count ) * 2);
       else
-        CALL Make_order(New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
+          INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
+          VALUES ( curdate(), NULL, FALSE, New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
       end if;
     END IF;
   END IF;
@@ -457,24 +462,24 @@ END;
 
 ##############################################################################################
 # sales last month
-SELECT SUM(price) as sales FROM PURCHASE
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
 
+SELECT SUM(price) as sales FROM PURCHASE where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 1;
 
 
 # The top 5 customers who purchase the most purchase amount in descending order for the last three months
+
+
 SELECT first_name,last_name, SUM(price) as buyings FROM
-        PURCHASE inner join `User` on User.id = User_id
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+          PURCHASE inner join `User` on User.id = User_id
+where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 GROUP BY User.id ORDER BY buyings DESC LIMIT 5;
+
+
 
 
 
 # The top 10 selling books for the last three months
 SELECT title, SUM(price) as sales FROM
         PURCHASE inner join BOOK on ISBN = BOOK_ISBN
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 GROUP BY BOOK_ISBN ORDER BY sales DESC LIMIT 10;

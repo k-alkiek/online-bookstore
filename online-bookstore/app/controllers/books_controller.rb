@@ -138,8 +138,16 @@ class BooksController < ApplicationController
 
     if params[:author].present?
       authors_ids = ActiveRecord::Base.connection.execute("SELECT id FROM AUTHOR where lower(Author_name) like \"%#{params[:author].to_s.downcase}%\"").map {|e| e = e[0]}
-      books_isbn = ActiveRecord::Base.connection.execute("SELECT Distinct BOOK_ISBN FROM BOOK_AUTHOR WHERE AUTHOR_id IN (#{authors_ids.join(", ")})").map {|e| e = e[0]}
-      @filters.push(" ISBN IN (\"#{books_isbn.join("\", \"")}\")")
+      if authors_ids.present?
+        books_isbn = ActiveRecord::Base.connection.execute("SELECT Distinct BOOK_ISBN FROM BOOK_AUTHOR WHERE AUTHOR_id IN (#{authors_ids.join(", ")})").map {|e| e = e[0]}
+        if books_isbn.present?
+          @filters.push(" ISBN IN (\"#{books_isbn.join("\", \"")}\")")
+        else
+          @filters.push(" ISBN = (\"this is not a vaild entry\")")
+        end
+      else
+        @filters.push(" ISBN = (\"this is not a vaild entry\")")
+      end
     end
 
     if params[:publisher].present?

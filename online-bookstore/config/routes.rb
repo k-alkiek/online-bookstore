@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'reports/sales'
+  get 'reports/top_customers'
+  get 'reports/best_selling'
   root 'sessions#new'
   get 'sessions/new'
   get 'orders/confirm'

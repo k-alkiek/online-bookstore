@@ -11,6 +11,7 @@ class Ability
         can :manage, Publisher
         can :read, Purchase
         can :manage, User
+        can :manage, :report
     else
         can :read, Book
         can :read, Author

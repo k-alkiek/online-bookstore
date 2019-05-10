@@ -1,5 +1,6 @@
 class CartController < ApplicationController
 	include SessionsHelper
+  authorize_resource :class => false
 	before_action :set_cart_books, only: [:show, :add_to_cart, :delete, :edit]
   
   def show

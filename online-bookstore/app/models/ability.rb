@@ -13,6 +13,8 @@ class Ability
         can :manage, User
     else
         can :read, Book
+        can :update, User, id: user.id
+        can :show, User, id: user.id
         can :read, Purchase, User_id: user.id
     end
   end

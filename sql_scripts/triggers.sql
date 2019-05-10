@@ -387,6 +387,7 @@ BEGIN
   DECLARE number_of_available_copies INTEGER;
   DECLARE price_ REAL;
 
+  SET New.date_of_purchase = CURDATE();
   IF  New.No_of_copies < 1 THEN
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Not acceptable quantity "can\'t be negative" ';
   END IF;
@@ -542,6 +543,54 @@ BEGIN
   END IF;
 END;
 
+DELIMITER ;;
+CREATE PROCEDURE insert_purchases(
+  IN isbn_list         TEXT,
+  IN quantity_list     TEXT,
+  IN new_user_id           INT
+)
+  BEGIN
+    DECLARE isbn_list_len    INT DEFAULT 0;
+    DECLARE quantity_list_len    INT DEFAULT 0;
+    DECLARE isbn_sub_strlen INT DEFAULT 0;
+    DECLARE quantity_sub_strlen INT DEFAULT 0;
+    DECLARE _rollback BOOL DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET _rollback = 1;
+    START TRANSACTION;
+
+    do_this:
+      LOOP
+        SET isbn_list_len = CHAR_LENGTH(isbn_list);
+        SET quantity_list_len = CHAR_LENGTH(quantity_list);
+
+        INSERT INTO  PURCHASE (User_id, BOOK_ISBN, No_of_copies)
+        VALUES(new_user_id,SUBSTRING_INDEX(isbn_list, ',', 1),SUBSTRING_INDEX(quantity_list, ',', 1));
+
+        SET isbn_sub_strlen = CHAR_LENGTH(SUBSTRING_INDEX(isbn_list, ',', 1))+2;
+        SET isbn_list = MID(isbn_list, isbn_sub_strlen);
+
+        SET quantity_sub_strlen = CHAR_LENGTH(SUBSTRING_INDEX(quantity_list, ',', 1))+2;
+        SET quantity_list = MID(quantity_list, quantity_sub_strlen);
+
+        IF isbn_list = '' OR quantity_list = '' THEN
+          LEAVE do_this;
+        END IF;
+      END LOOP do_this;
+
+    IF isbn_list != '' OR quantity_list != '' THEN
+      SELECT concat('Error processing input');
+      ROLLBACK;
+    ELSE
+      IF (_rollback) THEN
+        SELECT concat('There are no enough available copies of the books ordered.\nCould not complete purchase.');
+        ROLLBACK;
+      ELSE
+        SELECT 'Purchase completed successfully.';
+        COMMIT;
+      END IF;
+    END IF;
+  END ;;
+DELIMITER ;
 
 
 ##############################################################################################

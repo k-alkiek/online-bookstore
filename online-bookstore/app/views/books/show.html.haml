@@ -32,3 +32,11 @@
   = link_to 'Edit', edit_book_path(@book)
   |
 = link_to 'Back', books_path
+
+= form_with url: cart_add_to_cart_path do |form|
+  = form.hidden_field :ISBN, value: @book.ISBN
+  = form.label :quantity
+  = form.number_field :quantity, value: 1, min: 1, max: @book.Available_copies_count, step: 1
+  = form.submit 'Add to shopping cart'
+  
+%br/

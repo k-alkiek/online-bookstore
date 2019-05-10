@@ -59,7 +59,7 @@
                   = fa_icon "gbp"
                   Purchases
               %li{class: controller_name == "cart"? "active":""}
-                = link_to "cart_path" do #, cart_show_path 
+                = link_to cart_show_path do #, cart_show_path 
                   = fa_icon "shopping-cart"
                   Cart
               %li.dropdown
@@ -75,9 +75,8 @@
         /   .navbar-collapse
         / .container-fluid
     %br
-
-
     .container.well.bg-white
       - flash.each do |key, value|
         %div{:class => "alert alert-#{key}"}= value
       = yield
+

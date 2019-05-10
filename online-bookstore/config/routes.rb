@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  post 'cart/add_to_cart'
+  get 'cart/show'
+  post 'cart/edit'
+  get 'cart/delete'
   get 'reports/sales'
   get 'reports/top_customers'
   get 'reports/best_selling'
@@ -9,7 +13,12 @@ Rails.application.routes.draw do
   get 'users/demote'
   get 'orders/unconfirm'
   resources :users
-  resources :purchases, only: [:index, :show]
+  resources :purchases , only: [:index, :show] do
+    collection do
+      get 'checkout'
+      post 'confirm_checkout'
+    end
+  end
   resources :publishers
   resources :orders
   resources :book_authors

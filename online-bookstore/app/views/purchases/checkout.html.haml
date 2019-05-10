@@ -1,0 +1,26 @@
+%h1 Confirm purchase
+= form_with(url: confirm_checkout_purchases_path, class: "form-horizontal", local: true) do |form|
+  - if flash[:error]
+    .alert.alert-danger
+      = flash[:error]
+  .form-group
+    = form.label :credit_card_number, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.text_field :credit_card_no, class: "form-control"
+  .form-group
+    = form.label :expiry_date, class: "control-label col-sm-2"
+    .col-sm-10
+      = form.date_select :expiry_date, {discard_day: true}, {class: "form-control"}
+  .actions
+    %br
+    = form.submit "Confirm Order", class: "btn btn-default col-sm-2 pull-right"
+
+= link_to "Back to Cart", cart_show_path, class: "btn btn-default"
+
+/ %p
+/   %strong Credit card number:
+/   =number_field_tag(id: :credit_card_no, value: @number, type: "number" , disabled: false)
+/ %p
+/   %strong Expiry date:
+/   =date_field("credit_card", "expiry_date", min: Date.today, value: @date)
+/ = link_to_if(cookies[:books_in_cart].split(",") != [], "Confirm Order", action: "confirm_checkout", params: {credit_card_no: @number, expiry_date: @date})

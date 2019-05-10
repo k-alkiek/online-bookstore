@@ -1,0 +1,41 @@
+%h1 Cart
+-total_price = 0
+
+- if flash[:danger]
+  .alert.alert-danger
+    = flash[:danger]
+%table.table.table-bordered.table-hover
+  %thead
+    %tr
+      %th ISBN
+      %th Title
+      %th Category
+      %th Selling price
+      %th Available copies count
+      %th Publisher name
+      %th Publish year
+      %th{:colspan => "5"}
+  %tbody
+    -@result.zip(@book_quantity).each do |row, quantity|
+      %tr{:style => (quantity.to_i > row[4] ? "background-color: #FADBD8;" : "")}
+        -row.each do |field|
+          %td{style: "width: 100px"}= field
+        %td= link_to 'Remove', controller: "cart", action: "delete", params: {ISBN: row.first}
+        %td
+          = form_with url: cart_edit_path do |form|
+            = form.hidden_field :ISBN, value: row.first
+            = form.number_field :newquantity, value: quantity, min: 1, max: row[4], step: 1
+            = form.submit 'Edit quantity', class: "btn btn-default btn-sm"
+        %td
+          - total_price += quantity.to_i * row[3]
+          = 'total individual price: ' + (quantity.to_i * row[3]).to_s + "L.E"
+
+    %tr
+      %td{:colspan => "8"}
+      %td
+        %strong= "Number of Titles: #{@result.count}"
+      %td
+        %strong= "Total Price: #{total_price}"
+- if @result.count> 0
+  = link_to 'Check out', {controller: "purchases", action: "checkout"}, {class: "btn btn-default pull-right"}
+%br/

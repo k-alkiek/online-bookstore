@@ -20,6 +20,8 @@ module SessionsHelper
   def log_out
     session.delete(:user_id)
     @current_user = nil
+    cookies.delete(:books_in_cart)
+    cookies.delete(:quantity_ordered)
   end
 
 

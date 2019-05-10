@@ -40,8 +40,8 @@ class PublishersController < ApplicationController
         @publishers = Publisher.find_by_sql("SELECT * FROM PUBLISHER")
         format.html { redirect_to publishers_url, notice: 'Publisher was successfully created.' }
         format.json { render :show, status: :created, location: @publisher }
-      rescue
-
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :new }
         format.json { render json: @publisher.errors, status: :unprocessable_entity }
       end
@@ -61,8 +61,8 @@ class PublishersController < ApplicationController
         ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @publisher, notice: 'Publisher was successfully updated.' }
         format.json { render :show, status: :ok, location: @publisher }
-      rescue
-
+      rescue => error
+        flash.now[:alert] =  error.message
         format.html { render :edit }
         format.json { render json: @publisher.errors, status: :unprocessable_entity }
       end

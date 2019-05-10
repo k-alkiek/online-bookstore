@@ -7,10 +7,131 @@ IN ISBN varchar(17),
 IN amount int
 )
 BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION;
   INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
   VALUES ( curdate(), NULL, FALSE, ISBN, amount);
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
 END //
 DELIMITER ;
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE update_order(
+IN ISBN varchar(17),
+IN amount int,
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+  UPDATE `ORDER` SET
+        BOOK_ISBN = ISBN
+        ,quantity = amount
+         where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE delete_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  Delete FROM `ORDER` Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE confirm_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  UPDATE  `ORDER` SET confirmed = true Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE unconfirm_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  UPDATE  `ORDER` SET confirmed = false Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
 
 
 ###################################################################################################################

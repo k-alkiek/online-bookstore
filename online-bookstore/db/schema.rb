@@ -72,8 +72,8 @@ ActiveRecord::Schema.define(version: 0) do
   end
 
   add_foreign_key "BOOK", "PUBLISHER", column: "PUBLISHER_Name", primary_key: "Name", name: "fk_BOOK_PUBLISHER1", on_update: :cascade
-  add_foreign_key "BOOK_AUTHOR", "AUTHOR", name: "fk_BOOK_has_AUTHOR_AUTHOR1", on_update: :cascade
-  add_foreign_key "BOOK_AUTHOR", "BOOK", column: "BOOK_ISBN", primary_key: "ISBN", name: "fk_BOOK_has_AUTHOR_BOOK1", on_update: :cascade
+  add_foreign_key "BOOK_AUTHOR", "AUTHOR", name: "fk_BOOK_has_AUTHOR_AUTHOR1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "BOOK_AUTHOR", "BOOK", column: "BOOK_ISBN", primary_key: "ISBN", name: "fk_BOOK_has_AUTHOR_BOOK1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "ORDER", "BOOK", column: "BOOK_ISBN", primary_key: "ISBN", name: "fk_ORDER_BOOK", on_update: :cascade
   add_foreign_key "PURCHASE", "BOOK", column: "BOOK_ISBN", primary_key: "ISBN", name: "fk_User_has_BOOK_BOOK1", on_update: :cascade
   add_foreign_key "PURCHASE", "User", name: "fk_User_has_BOOK_User1", on_update: :cascade

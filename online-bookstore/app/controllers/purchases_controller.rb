@@ -98,7 +98,6 @@ class PurchasesController < ApplicationController
     end
 
     def call_procedure(isbn_list, quantity_list, user_id)
-      binding.pry
       result = ActiveRecord::Base.connection.execute("call insert_purchases(\"#{isbn_list}\", \"#{quantity_list}\", #{user_id});")
       return result.first.first
     end

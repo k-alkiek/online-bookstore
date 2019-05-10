@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   resources :purchases , only: [:index, :show] do
     collection do
       get 'checkout'
-      get 'confirm_checkout'
+      post 'confirm_checkout'
     end
   end
   resources :publishers

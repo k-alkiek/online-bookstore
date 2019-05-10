@@ -36,5 +36,6 @@
         %strong= "Number of Titles: #{@result.count}"
       %td
         %strong= "Total Price: #{total_price}"
-= link_to_if(@result.count > 0, 'Check out', {controller: "purchases", action: "checkout"}, {class: "btn btn-default pull-right"})
+- if @result.count> 0
+  = link_to 'Check out', {controller: "purchases", action: "checkout"}, {class: "btn btn-default pull-right"}
 %br/

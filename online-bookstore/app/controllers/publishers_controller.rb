@@ -1,4 +1,6 @@
 class PublishersController < ApplicationController
+  load_and_authorize_resource
+  
   before_action :set_publisher, only: [:show, :edit, :update, :destroy]
   before_action :check_logged_in
 

@@ -25,6 +25,8 @@
         = submit_tag  "Search", :name => nil, class: "btn btn-default pull-right"
     .form-row
       .col-sm-11
+- if current_user.isManager?
+  = link_to 'New Book', new_book_path, class: "btn btn-default pull-right"
 %table.table.table-bordered.table-hover
   %thead
     %tr
@@ -38,7 +40,6 @@
       %th{width: "90px"} Publish year
       %th{:colspan => "3"}
   %tbody
-    = link_to 'New Book', new_book_path, class: "btn btn-default pull-right"
     .text-center
       = will_paginate
     - @books.each do |book|
@@ -58,6 +59,7 @@
           %td= link_to 'Edit', edit_book_path(book)
           %td= link_to 'Destroy', book, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+
 .text-center
   = will_paginate
 

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get 'users/demote'
   get 'orders/unconfirm'
   resources :users
-  resources :purchases
+  resources :purchases, only: [:index, :show]
   resources :publishers
   resources :orders
   resources :book_authors

@@ -1,5 +1,89 @@
 use LIBRARY_MANAGER;
 
+
+
+
+
+#########################################################################################
+
+
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS insert_purchase $$
+CREATE PROCEDURE insert_purchase(
+IN ISBNs MEDIUMTEXT,
+IN _id int,
+IN Quantities MEDIUMTEXT)
+BEGIN
+
+DECLARE _next_ISBN TEXT DEFAULT NULL;
+DECLARE _nextlen_ISBN INT DEFAULT NULL;
+DECLARE _value_ISBN TEXT DEFAULT NULL;
+
+DECLARE _next_Quantity TEXT DEFAULT NULL;
+DECLARE _nextlen_Quantity INT DEFAULT NULL;
+DECLARE _value_Quantity TEXT DEFAULT NULL;
+
+
+iterator:
+LOOP
+  -- exit the loop if the list seems empty or was null;
+  -- this extra caution is necessary to avoid an endless loop in the proc.
+  IF LENGTH(TRIM(ISBNs)) = 0 OR ISBNs IS NULL THEN
+    LEAVE iterator;
+  END IF;
+
+  -- capture the next value from the list
+  SET _next_ISBN = SUBSTRING_INDEX(ISBNs,',',1);
+  SET _next_Quantity = SUBSTRING_INDEX(Quantities,',',1);
+
+  -- save the length of the captured value; we will need to remove this
+  -- many characters + 1 from the beginning of the string
+  -- before the next iteration
+  SET _nextlen_ISBN = LENGTH(_next_ISBN);
+  SET _nextlen_Quantity = LENGTH(_next_Quantity);
+
+  -- trim the value of leading and trailing spaces, in case of sloppy CSV strings
+  SET _value_Quantity = TRIM(_next_Quantity);
+  SET _value_ISBN = TRIM(_next_ISBN);
+
+  -- insert the extracted value into the target table
+  INSERT INTO PURCHASE ( user_id, BOOK_ISBN, No_of_copies,date_of_purchase) VALUES (_id,_value_ISBN,CAST(_value_Quantity AS SIGNED INTEGER),curdate());
+
+  -- rewrite the original string using the `INSERT()` string function,
+  -- args are original string, start position, how many characters to remove,
+  -- and what to "insert" in their place (in this case, we "insert"
+  -- an empty string, which removes _nextlen + 1 characters)
+  SET Quantities = INSERT(Quantities,1,_nextlen_Quantity + 1,'');
+  SET ISBNs = INSERT(ISBNs,1,_nextlen_ISBN + 1,'');
+
+END LOOP;
+END $$
+
+#      USAGE ------------------>  CALL insert_purchase('014047244-4,021651479-7',1,'22,10')
+
+####################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # procedure to submit an unconfirmed order gor a book from its publisher
 DELIMITER //
 CREATE PROCEDURE Make_order(

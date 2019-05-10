@@ -4,6 +4,7 @@ class Ability
   def initialize(user)
     if user.nil?
         can :read, Book
+        can :create, User
     elsif user.isManager?
         can :manage, Author
         can :manage, Book

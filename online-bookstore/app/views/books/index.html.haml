@@ -34,7 +34,8 @@
       %th Title
       %th Category
       %th Selling price
-      %th Minimum threshold
+      -if current_user.isManager
+        %th Minimum threshold
       %th Available copies count
       %th Publisher name
       %th{width: "90px"} Publish year

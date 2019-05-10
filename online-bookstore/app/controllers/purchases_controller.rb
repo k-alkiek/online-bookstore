@@ -1,7 +1,7 @@
 class PurchasesController < ApplicationController
   load_and_authorize_resource
   
-  before_action :set_purchase, only: [:show, :edit, :update, :destroy]
+  before_action :set_purchase, only: [:show]
   before_action :check_logged_in
 
   # GET /purchases
@@ -17,68 +17,6 @@ class PurchasesController < ApplicationController
   # GET /purchases/1
   # GET /purchases/1.json
   def show
-  end
-
-  # GET /purchases/new
-  def new
-    @purchase = Purchase.new
-  end
-
-  # GET /purchases/1/edit
-  def edit
-  end
-
-  # POST /purchases
-  # POST /purchases.json
-  def create
-    @purchase = Purchase.new(purchase_params)
-
-    respond_to do |format|
-      begin
-        sql = "INSERT INTO PURCHASE
-       ( USER_id , BOOK_ISBN, No_of_copies, date_of_purchase,price)
-        VALUES ( #{params[:purchase][:User_id]},
-        \"#{params[:purchase][:BOOK_ISBN]}\", #{params[:purchase][:No_of_copies].to_i}
-          , curdate() , 1)"
-        ActiveRecord::Base.connection.execute(sql)
-        @purchases = Purchase.find_by_sql("SELECT * FROM PURCHASE")
-        format.html { redirect_to purchases_url, notice: 'Purchase was successfully created.' }
-        format.json { render :show, status: :created, location: @purchase }
-      rescue
-        format.html { render :new }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /purchases/1
-  # PATCH/PUT /purchases/1.json
-  def update
-    respond_to do |format|
-      begin
-        sql = "UPDATE PURCHASE SET
-        No_of_copies = #{params[:purchase][:No_of_copies]}
-         where id = #{params[:id].to_i}"
-        ActiveRecord::Base.connection.execute(sql)
-        format.html { redirect_to @purchase, notice: 'Purchase was successfully updated.'}
-        format.json { render :show, status: :ok, location: @purchase }
-      rescue
-        format.html { render :edit }
-        format.json { render json: @purchase.errors, status: :unprocessable_entity }
-
-      end
-    end
-  end
-
-  # DELETE /purchases/1
-  # DELETE /purchases/1.json
-  def destroy
-    sql = "Delete FROM PURCHASE WHERE id = #{params[:id].to_i}"
-    ActiveRecord::Base.connection.execute(sql)
-    respond_to do |format|
-      format.html { redirect_to purchases_url, notice: 'Purchase was successfully destroyed.' }
-      format.json { head :no_content }
-    end
   end
 
   private

@@ -1,6 +1,7 @@
 %p#notice= notice
 %h1 Authors
-= link_to 'New Author', new_author_path, class: "btn btn-default pull-right"
+- if current_user.isManager?
+  = link_to 'New Author', new_author_path, class: "btn btn-default pull-right"
 %table.table.table-bordered.table-hover
   %thead
     %tr

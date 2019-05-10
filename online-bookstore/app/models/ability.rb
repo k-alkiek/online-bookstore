@@ -13,9 +13,11 @@ class Ability
         can :manage, User
     else
         can :read, Book
+        can :read, Author
+        can :read, Publisher
+        can :read, Purchase, User_id: user.id
         can :update, User, id: user.id
         can :show, User, id: user.id
-        can :read, Purchase, User_id: user.id
     end
   end
 end

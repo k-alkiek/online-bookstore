@@ -200,6 +200,25 @@ BEGIN
   END IF;
 END;
 
+DELIMITER //
+CREATE PROCEDURE `make_purchase`(IN sql_text TEXT)
+
+BEGIN
+    DECLARE `_rollback` BOOL DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+    START TRANSACTION;
+    prepare stmt from sql_text;
+    execute stmt;
+    deallocate prepare stmt;
+    IF `_rollback` THEN
+        SELECT concat('There are no enough available copies of the books ordered.\nCould not complete purchase.');
+        ROLLBACK;
+    ELSE
+        SELECT 'Purchase completed successfully.';
+        COMMIT;
+    END IF;
+END //
+DELIMITER ;
 
 
 ##############################################################################################

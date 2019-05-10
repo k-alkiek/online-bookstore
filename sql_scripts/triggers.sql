@@ -1,5 +1,89 @@
 use LIBRARY_MANAGER;
 
+
+
+
+
+#########################################################################################
+
+
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS insert_purchase $$
+CREATE PROCEDURE insert_purchase(
+IN ISBNs MEDIUMTEXT,
+IN _id int,
+IN Quantities MEDIUMTEXT)
+BEGIN
+
+DECLARE _next_ISBN TEXT DEFAULT NULL;
+DECLARE _nextlen_ISBN INT DEFAULT NULL;
+DECLARE _value_ISBN TEXT DEFAULT NULL;
+
+DECLARE _next_Quantity TEXT DEFAULT NULL;
+DECLARE _nextlen_Quantity INT DEFAULT NULL;
+DECLARE _value_Quantity TEXT DEFAULT NULL;
+
+
+iterator:
+LOOP
+  -- exit the loop if the list seems empty or was null;
+  -- this extra caution is necessary to avoid an endless loop in the proc.
+  IF LENGTH(TRIM(ISBNs)) = 0 OR ISBNs IS NULL THEN
+    LEAVE iterator;
+  END IF;
+
+  -- capture the next value from the list
+  SET _next_ISBN = SUBSTRING_INDEX(ISBNs,',',1);
+  SET _next_Quantity = SUBSTRING_INDEX(Quantities,',',1);
+
+  -- save the length of the captured value; we will need to remove this
+  -- many characters + 1 from the beginning of the string
+  -- before the next iteration
+  SET _nextlen_ISBN = LENGTH(_next_ISBN);
+  SET _nextlen_Quantity = LENGTH(_next_Quantity);
+
+  -- trim the value of leading and trailing spaces, in case of sloppy CSV strings
+  SET _value_Quantity = TRIM(_next_Quantity);
+  SET _value_ISBN = TRIM(_next_ISBN);
+
+  -- insert the extracted value into the target table
+  INSERT INTO PURCHASE ( user_id, BOOK_ISBN, No_of_copies,date_of_purchase) VALUES (_id,_value_ISBN,CAST(_value_Quantity AS SIGNED INTEGER),curdate());
+
+  -- rewrite the original string using the `INSERT()` string function,
+  -- args are original string, start position, how many characters to remove,
+  -- and what to "insert" in their place (in this case, we "insert"
+  -- an empty string, which removes _nextlen + 1 characters)
+  SET Quantities = INSERT(Quantities,1,_nextlen_Quantity + 1,'');
+  SET ISBNs = INSERT(ISBNs,1,_nextlen_ISBN + 1,'');
+
+END LOOP;
+END $$
+
+#      USAGE ------------------>  CALL insert_purchase('014047244-4,021651479-7',1,'22,10')
+
+####################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # procedure to submit an unconfirmed order gor a book from its publisher
 DELIMITER //
 CREATE PROCEDURE Make_order(
@@ -7,10 +91,134 @@ IN ISBN varchar(17),
 IN amount int
 )
 BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION;
   INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
   VALUES ( curdate(), NULL, FALSE, ISBN, amount);
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
 END //
 DELIMITER ;
+
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE update_order(
+IN ISBN varchar(17),
+IN amount int,
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+  UPDATE `ORDER` SET
+        BOOK_ISBN = ISBN
+        ,quantity = amount
+         where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE delete_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  Delete FROM `ORDER` Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE confirm_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  UPDATE  `ORDER` SET confirmed = true Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE unconfirm_order(
+IN _id int
+)
+BEGIN
+
+  DECLARE `_rollback` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 1;
+
+  SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+  START TRANSACTION ;
+
+  UPDATE  `ORDER` SET confirmed = false Where id = _id;
+
+  IF `_rollback` THEN
+      ROLLBACK;
+  ELSE
+      COMMIT;
+  END IF;
+
+END //
+DELIMITER ;
+
+
 
 
 ###################################################################################################################
@@ -59,7 +267,7 @@ CREATE TRIGGER author_create_sanity_check
 BEFORE INSERT ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[\'])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -70,7 +278,7 @@ CREATE TRIGGER author_update_sanity_check
 BEFORE UPDATE ON AUTHOR
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.]|[-]|[\'])+$'))then
+  IF (NOT ( NEW.Author_name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Author name is not well formatted';
   END IF;
 END;
@@ -80,7 +288,7 @@ CREATE TRIGGER publisher_create_sanity_check
 BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[-]|[,]|[\'])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -89,10 +297,10 @@ END;
 
 # prevent update malformed publisher
 CREATE TRIGGER publisher_update_sanity_check
-BEFORE UPDATE ON PUBLISHER
+BEFORE INSERT ON PUBLISHER
 FOR EACH ROW
 BEGIN
-  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[-]|[,]|[\'])+$'))then
+  IF (NOT ( NEW.Name REGEXP '^([A-Za-z]|[[:space:]]|[.])+$'))then
           SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Publisher name is not well formatted';
   END IF;
 END;
@@ -274,9 +482,11 @@ BEGIN
     IF ( (number_of_ordered_copies is NULL AND  New.Available_copies_count < NEW.Minimum_threshold) OR
     (NEW.Available_copies_count + number_of_ordered_copies < NEW.Minimum_threshold)) then
       IF number_of_ordered_copies is NULL then
-        CALL Make_order(New.ISBN, (New.Minimum_threshold - NEW.Available_copies_count ) * 2);
+          INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
+          VALUES ( curdate(), NULL, FALSE, NEW.ISBN, (New.Minimum_threshold - NEW.Available_copies_count ) * 2);
       else
-        CALL Make_order(New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
+          INSERT INTO `ORDER` ( date_submitted, estimated_arrival_date, confirmed, BOOK_ISBN, quantity)
+          VALUES ( curdate(), NULL, FALSE, New.ISBN, (New.Minimum_threshold - number_of_ordered_copies - NEW.Available_copies_count ) * 2);
       end if;
     END IF;
   END IF;
@@ -385,24 +595,24 @@ DELIMITER ;
 
 ##############################################################################################
 # sales last month
-SELECT SUM(price) as sales FROM PURCHASE
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH);
 
+SELECT SUM(price) as sales FROM PURCHASE where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 1;
 
 
 # The top 5 customers who purchase the most purchase amount in descending order for the last three months
+
+
 SELECT first_name,last_name, SUM(price) as buyings FROM
-        PURCHASE inner join `User` on User.id = User_id
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+          PURCHASE inner join `User` on User.id = User_id
+where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 GROUP BY User.id ORDER BY buyings DESC LIMIT 5;
+
+
 
 
 
 # The top 10 selling books for the last three months
 SELECT title, SUM(price) as sales FROM
         PURCHASE inner join BOOK on ISBN = BOOK_ISBN
-WHERE YEAR(date_of_purchase) = YEAR(CURRENT_DATE - INTERVAL 3 MONTH)
-AND MONTH(date_of_purchase) = MONTH(CURRENT_DATE - INTERVAL 3 MONTH)
+where TIMESTAMPDIFF(MONTH,curdate(),date_of_purchase) < 3
 GROUP BY BOOK_ISBN ORDER BY sales DESC LIMIT 10;

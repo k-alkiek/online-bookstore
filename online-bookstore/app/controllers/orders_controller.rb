@@ -32,16 +32,14 @@ class OrdersController < ApplicationController
 
       begin
 
-        sql = "INSERT INTO `ORDER`
-       ( date_submitted , BOOK_ISBN, quantity)
-        VALUES ( curdate(),
-        \"#{params[:order][:BOOK_ISBN]}\", #{params[:order][:quantity].to_i})"
+        sql = "Call Make_order(\"#{params[:order][:BOOK_ISBN]}\", #{params[:order][:quantity].to_i})"
         ActiveRecord::Base.connection.execute(sql)
         @orders = Order.find_by_sql("SELECT * FROM `ORDER`")
         format.html { redirect_to orders_url, notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
       rescue
-        format.html { render :new }
+        flash.now[:alert] = 'The ISBN you chose doesn\'t exist'
+        format.html { render :new}
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
@@ -54,14 +52,19 @@ class OrdersController < ApplicationController
       begin
         # add estimated arrival date
 
-        sql = "UPDATE `ORDER` SET
-        BOOK_ISBN = \"#{params[:order][:BOOK_ISBN]}\"
-        ,quantity = #{params[:order][:quantity]}
-         where id = #{params[:id].to_i}"
+        sql = "CALL update_order(
+         \"#{params[:order][:BOOK_ISBN]}\"
+        , #{params[:order][:quantity]},
+          #{params[:id].to_i})  "
         ActiveRecord::Base.connection.execute(sql)
         format.html { redirect_to @order, notice: 'Order was successfully updated.' }
         format.json { render :show, status: :ok, location: @order }
-      rescue
+      rescue => error
+        if error.message.include? "foreign"
+          flash.now[:alert] = 'The ISBN you chose doesn\'t exist'
+        else
+          flash.now[:alert] =  error.message
+        end
         format.html { render :edit }
         format.json { render json: @order.errors, status: :unprocessable_entity }
 
@@ -75,7 +78,7 @@ class OrdersController < ApplicationController
 
     respond_to do |format|
       begin
-        sql = "Delete FROM `ORDER` Where id = #{params[:id].to_i}"
+        sql = "CALL delete_order(#{params[:id].to_i})"
         ActiveRecord::Base.connection.execute(sql)
         @orders = Order.find_by_sql("SELECT * FROM `ORDER`").paginate(:page => params[:page] || 1,:per_page => 20)
         format.html { redirect_to orders_url, notice: 'Order was successfully destroyed.' }
@@ -91,17 +94,16 @@ class OrdersController < ApplicationController
 
 
   def confirm
-    sql = "UPDATE `ORDER` SET confirmed = TRUE where id = #{params[:id] }"
+    sql = "CALL confirm_order( #{params[:id] })"
     ActiveRecord::Base.connection.execute(sql)
     redirect_to orders_url
   end
 
   def unconfirm
-    sql = "UPDATE `ORDER` SET confirmed = FALSE where id = #{params[:id] }"
+    sql = "CALL unconfirm_order( #{params[:id] })"
     ActiveRecord::Base.connection.execute(sql)
     redirect_to orders_url
   end
-
 
 
   private

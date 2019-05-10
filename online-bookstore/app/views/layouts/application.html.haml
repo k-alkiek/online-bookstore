@@ -76,4 +76,7 @@
         / .container-fluid
     %br
     .container.well.bg-white
+      - flash.each do |key, value|
+        %div{:class => "alert alert-#{key}"}= value
       = yield
+
